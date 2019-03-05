@@ -1,0 +1,135 @@
+---
+date: "February 27, 2019"
+output: 
+  html_document:
+    css: styles.css
+    theme: "cosmo"
+---
+
+```{r include = FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+noble_geo <- read_csv("../R/data/geocoded/noble_geo.csv")
+opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 2, fig.height = 2, fig.align = "center")
+```
+
+
+# Creating an open-source precinct shapefile for Ohio {.tabset}
+
+
+This site is a culmination and explanation of the work that went into this project. On the first page you will find a brief overview of the different parts of the project. On subsequent pages, each part will be explained in more detail with images and examples.
+
+## Overview
+
+
+## Motivation <br>for the project
+
+
+
+### Current status of voting rights in America
+
+
+### Why are precincts important for voting rights?
+
+Precincts are the smallest unit at which election data are reported. Counties can also provide a coarse picture of election returns, but precincts give significantly more detail to the story.	In order to make nuanced arguments about the fairness of districts, we need to know about the precinct boundaries (Geo-Enabled Elections, 2018).  
+
+In the United States, precinct boundaries are left up to the county to decide. On the surface that is not a bad thing, but a problem arises when there is no central database for that information. Often the information isn’t digitized in an easily shareable way. In my ideal world there would be a centralized repository of shapefiles that is required to be updated whenever there is a boundary change. However, we are pretty far from that in terms of data capacity, and I realize that’s a larger problem than just precinct boundaries. 
+
+Recently in the news, with the election and decennial census approaching in 2020, there has been a resurgent interest in polling place accessibility, voter registration campaigns, and (sometimes hidden) voter disenfranchisement. For example, there’s an ACLU lawsuit in Georgia now over closing polling places in predominantly African-American areas.The Supreme Court also recently upheld Ohio’s practice of purging inactive voters from the voter rolls (Liptak, 2018). Many of the most pressing voting rights challenges require precise knowledge of where polling places are and who is using those polling places, as well as which voters are affected by new policies.
+
+This project aims to make it easier for community members to learn more about their own precincts and create one way for people to support concerns about equity and fairness with numbers. We focus on Ohio, but we hope our methodology can be repeated in other states as well and support the work of groups working on similar research. 
+
+
+## Collecting publicly <br> available data 
+
+### Setting up the data collection
+
+we started with a list of the 88 counties in Ohio and a group of about 10 fellows. For each county we looked online for a publicly available shapefile. Around 30 had shapefiles up-front. Counties fell into one of four categories: had a shapefile, had a web map, had a PDF map, had nothing available (at the time). 
+After the initial internet search, we called the county Board of Elections and/or a secondary county official (a GIS specialist, for example). Our conversations with them depended on what information we had available to us already. For counties with shapefiles, we asked when that particular plan was adopted and if they had access to any previous plans’ shapefiles. For counties with a web map as the best option, which was fairly uncommon, they were almost always able to send the underlying shapefile, as well as answer all of the usual shapefile questions. Counties that had only PDF maps available online either said that the PDF was the best and only option or had a shapefile that just had not been released online, often due to a lack of strong GIS infrastructure. 
+
+
+The last and most difficult category were those counties that had nothing available online. Those calls went one of three ways. First, they would be able to send us a PDF or shapefile, which was the best situation. Second, and more likely, they were able to mail us a hard copy of a map. These were often paper maps or highway maps that had precinct boundaries drawn by hand with markers. Third, and slightly less likely, they really had no maps they were able to give us. These counties were generally small and rural, although some were surprisingly populated. Fourth, the county officials never answered the phone after repeated attempts or hung up on us. That only happened in one or two counties, though. 
+The counties that had no maps were the interesting ones.I will discuss more in depth how we handled drawing precincts for those counties in the [Approximating precinct maps section](#approximating-precinct-maps). Ultimately we used geocoding and the addresses listed in the voterfile to approximate the boundaries.
+
+
+In total, we were given shapefiles from 50 counties, PDF or paper maps from 31 counties, and no maps from 7 counties. The next few sections describe our methodology for each of the cases. Note that for counties that provided a shapefile, often the only work on our part was creating a projection file when one was not already included so I do not discuss that methodology in this paper. 
+
+
+### Digitizing maps
+
+In this section I refer to digitizing as the full process including both georeferencing and vectorizing.
+Among counties that provided us with PDF or paper maps, there was a wide range of quality and quantity. Some counties had a single PDF map of all the precincts whereas other counties had one precinct per PDF, which could be as many as 100 or so. Other counties mailed us paper maps, which also had a wide range of quality. There were even counties that split precincts among several PDFs. To digitize we used OpenStreetMap in QGIS. 
+
+There were approximately 450 total images to digitize. We hosted “digitizing workshops” and invited everyone at the research institute to attend with the promise of a free dinner and new technical skills. At the first one, I led a short lesson on georeferencing and map projection. We also made a step-by-step guide for georeferencing that was specific to these maps. Some images from the guide are shown below.
+
+<img src="images/digitizing_collage.png" alt="Collage of pages from our book on digitizing. Includes information about projection, adding images, checking data, and others." width="50%" height = "50%" align="center">
+
+During the second workshop we started vectorizing the georeferenced maps. This was prone to a few more technical issues, including difficult angles and fine-tuning. Due to time constraints we vectorized by selecting census blocks that were within the precincts because in most places, precinct lines followed census blocks. From a project management standpoint we usually assigned the georeferencing of a county to a group of two to four people and then assigned only one person for the vectorizing. This helped minimize opportunities for human error. 
+
+
+In total we estimated that we spent about 400 person hours on the project. Some of that time comes from the fact that many people had never used GIS before and we had to redo a few counties. In general, it’s a long and tedious process. As of now, by hand seems to be the only viable option. However, in the next section I will discuss an algorithm that was originally designed to impute missing data but the hope is that we could automate some of the digitizing in the future as well. 
+
+
+
+
+
+
+
+
+
+## Approximating <br>precinct maps
+
+<br> <br>
+
+Most of the counties we worked with in Ohio had either a shapefile available or pdf maps that we could digitize. The more challenging case was when no map existed that we could use. Much of the research I did was related to how to use other publicly available data to approximate the precinct boundaries in these counties. There were about ten counties total in this category. In the end we found that geocoded addresses from the [publicly available voter file](https://www6.sos.state.oh.us/ords/f?p=111:1) could draw “accurate-enough” precinct boundaries in the absence of a better option. Groups like the National States Geographic Information Council are also using voter addresses to geocode precinct boundaries with address range shapefiles. The general approach we settled on was to use the  to find the locations of currently registered voters and then triangulate plausible precinct boundaries using a nearest neighbor algorithm. The details of this algorithm are below. 
+
+### Data
+
+The first consideration is the readily available raw data that is available to researchers and community members. Calling counties for more data is an option, though a time consuming and tedious process. The ultimate goal is to make phone calls less necessary for obtaining data. 
+
+As previously mentioned, the voter files in Ohio (a list of registered voters) is publicly available online. The files are compiled by county, so in total there are 88 voter files in Ohio. Our variables of interest are the address field and the assigned precinct. An example of the voter file for Noble county is shown below:
+
+```{r echo = FALSE}
+kable(noble_geo %>% select(RESIDENTIAL_ADDRESS1, RESIDENTIAL_CITY, RESIDENTIAL_STATE, RESIDENTIAL_ZIP, PRECINCT_NAME) %>% head()) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, font_size = 10)
+```
+
+The other piece of necessary data is an underlying geographic unit for building the precincts. The natural choice is census blocks because in theory precinct boundaries do not split census blocks. Additionally, the method of digitizing we implemented uses census blocks to fill in precinct polygons Census blocks are the smallest geographic unit defined by the Census Bureau. In urban areas, census blocks are often analagous to city blocks, but this analogy does not hold in rural areas. The tigris (**cite!!**) package in R to accesses the census block shapefiles published by the Census Bureau (**cite!!**) for us. 
+
+```{r, out.width = "500px"}
+include_graphics("C:\\Users\\katie\\Documents\\honors\\R\\plots\\noble1.png")
+```
+
+```{r, out.width = "500px"}
+include_graphics("C:\\Users\\katie\\Documents\\honors\\R\\plots\\valid_addresses.png")
+```
+
+
+### Defining a model
+
+The idea behind our approximation method is to use nonparametric classification to impute the missing block precinct assignments. 
+
+We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. The difference is that $k$ varies by block $x_i$ in this case, so that parameter is instead $k(x_i)$. Different blocks have different numbers of adjacent neighbors, thus thus the neighborhood size is a function of the block. 
+
+From our set of $L$ possible precincts, the predicted precinct $\hat{p}_{k(x_i)nn}$ of a block $x_i$ is the most common precinct in its neighborhood of size $k(x_i)$, where $y_j$ is the precinct assignment of the $jth$ neighbor. The number of neighboring blocks in precinct $p_l$ is defined by $N_l(x_i)$. 
+
+$$\hat{p}_{k(x_i)nn} \in \text{argmax }N_l(x_i), \quad l \in \{1, 2, 3, ... L\}$$ 
+
+$$\text{where } N_l(x_i):= \sum_{j=1}^{k(x_i)}\mathbf{1}(y_j=p_l)$$
+
+After we run this model, there will still be unclassified blocks. This comes from the fact that not every unclassified block has classified neighbors. This then becomes an iterative model. The process is repeated until every block is classified. Blocks classified in previous iterations become part of the training set, so each iteration has more training data than previous ones. 
+
+If we wanted a probabilistic model instead of this deterministic one, we could define the probability of block $x_i$ being in precinct $p_l$ as the fraction of its neighbors in that precinct. 
+
+As an improvement to the original model definition, we include a requirement that a minimum fraction of a block's neighborhood, $\alpha$ must be classified in order to make a classification decision. This condition is supplied by the user. In this case, our model becomes:
+
+$$\text{if } \sum_j^{k(x_i)}y_i$$
+
+### Evaluating the model
+
+### A reproducible process
+
+If you would like to reproduce these maps, or produce them for your own work, we have compiled this algorithm into an R package. You can install it from the [GitHub repository](https://github.com/ykelly/approxprecincts) as it is not available on CRAN. 
+
+## What can we <br>do with this?
