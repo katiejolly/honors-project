@@ -112,7 +112,7 @@ The idea behind our approximation method is to use nonparametric classification 
 
 We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. The difference is that $k$ varies by block $x_i$ in this case, so that parameter is instead $k(x_i)$. Different blocks have different numbers of adjacent neighbors, thus thus the neighborhood size is a function of the block. 
 
-From our set of $L$ possible precincts, the predicted precinct $\hat{p}_{k(x_i)nn}$ of a block $x_i$ is the most common precinct in its neighborhood of size $k(x_i)$, where $y_j$ is the precinct assignment of the $jth$ neighbor. The number of neighboring blocks in precinct $p_l$ is defined by $N_l(x_i)$. 
+From our set of $L$ possible precincts, the predicted precinct $\hat{p}_{k(x_i)nn}$ of a block $x_i$ is the most common precinct in its neighborhood of size $k(x_i)$, where $y_j$ is the precinct assignment of the $jth$ neighbor. The number of neighboring blocks in precinct $p_l$ is defined by $N_l(x_i)$. Ties for the most common precinct are broken at random.
 
 $$\hat{p}_{k(x_i)nn} \in \text{argmax }N_l(x_i), \quad l \in \{1, 2, 3, ... L\}$$ 
 
@@ -132,8 +132,13 @@ $$\text{where } N_l(x_i):= \sum_{j=1}^{k(x_i)}\mathbf{1}(y_j=p_l)$$
 
 $$\textbf{else: } \quad \hat{p}_{k(x_i)nn} = NULL$$
 
+This ensures that spurious patterns from classifying with little data can be mitigated. Adding a minimum value that is too high prevents the algorithm from running to completion in some cases, so finding a balance is often a process of trial and error. We recommend a minimum percent ($\alpha$) no higher than 33 percent. 
 
 ### Evaluating the model
+
+After defining and implementing a model for imputing precinct names, we want to have a method for evaluating these maps. Two factors make this more complex. First, we do not have true values for the counties that did not provide data. Second, many model assessments are built for a quantitative response. We also needed an assessment built specifically for spatial qualitative response variables.
+
+In order to have "true" values for comparing the approximated ones, we independent generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure (**cite!!**), or v-measure. This measures the “sameness” of the different precinct labels, or how well two different partitions (precinct boundaries) fit together in one region (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition. We compute values for completeness, the average “sameness” of the regions with respect to partitions, and homogeneity, the average “sameness” of partitions with respect to zones. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match.
 
 ### A reproducible process
 
