@@ -580,10 +580,10 @@ MAPLE HEIGHTS
 <p>After we run this model, there will still be unclassified blocks. This comes from the fact that not every unclassified block has classified neighbors. This then becomes an iterative model. The process is repeated until every block is classified. Blocks classified in previous iterations become part of the training set, so each iteration has more training data than previous ones.</p>
 <p>If we wanted a probabilistic model instead of this deterministic one, we could define the probability of block <span class="math inline">\(x_i\)</span> being in precinct <span class="math inline">\(p_l\)</span> as the fraction of its neighbors in that precinct.</p>
 <p>As an improvement to the original model definition, we include a requirement that a minimum fraction of a block’s neighborhood, <span class="math inline">\(\alpha\)</span> must be classified in order to make a classification decision. This condition is supplied by the user. In this case, our model becomes:</p>
-<p><span class="math display">\[\text{if } \sum_j^{k(x_i)}y_i\]</span></p>
-</div>
-<div id="evaluating-the-model" class="section level3">
-<h3>Evaluating the model</h3>
+<p><span class="math display">\[\textbf{if: }\quad \frac{\sum_j^{k(x_i)}\mathbf{1} (y_j = NULL)}{k(x_i)} &lt; \alpha\]</span></p>
+<p><span class="math display">\[\hat{p}_{k(x_i)nn} \in \text{argmax }N_l(x_i), \quad l \in \{1, 2, 3, ... L\}\]</span></p>
+<p><span class="math display">\[\text{where } N_l(x_i):= \sum_{j=1}^{k(x_i)}\mathbf{1}(y_j=p_l)\]</span></p>
+<p><span class="math display">\[\textbf{else: } \quad \hat{p}_{k(x_i)nn} = NULL\]</span> ### Evaluating the model</p>
 </div>
 <div id="a-reproducible-process" class="section level3">
 <h3>A reproducible process</h3>
