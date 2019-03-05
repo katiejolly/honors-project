@@ -131,6 +131,8 @@ $$\hat{p}_{k(x_i)nn} \in \text{argmax }N_l(x_i), \quad l \in \{1, 2, 3, ... L\}$
 $$\text{where } N_l(x_i):= \sum_{j=1}^{k(x_i)}\mathbf{1}(y_j=p_l)$$
 
 $$\textbf{else: } \quad \hat{p}_{k(x_i)nn} = NULL$$
+
+
 ### Evaluating the model
 
 ### A reproducible process
