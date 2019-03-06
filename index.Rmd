@@ -82,7 +82,7 @@ In total we estimated that we spent about 400 person hours on the project. Some 
 
 <br> <br>
 
-Most of the counties we worked with in Ohio had either a shapefile available or pdf maps that we could digitize. The more challenging case was when no map existed that we could use. Much of the research I did was related to how to use other publicly available data to approximate the precinct boundaries in these counties. There were about ten counties total in this category. In the end we found that geocoded addresses from the [publicly available voter file](https://www6.sos.state.oh.us/ords/f?p=111:1) could draw “accurate-enough” precinct boundaries in the absence of a better option. Groups like the National States Geographic Information Council are also using voter addresses to geocode precinct boundaries with address range shapefiles. The general approach we settled on was to use the  to find the locations of currently registered voters and then triangulate plausible precinct boundaries using a nearest neighbor algorithm. The details of this algorithm are below. 
+Most of the counties we worked with in Ohio had either a shapefile available or pdf maps that we could digitize. The more challenging case was when no map existed that we could use. Much of the research I did was related to how to use other publicly available data to approximate the precinct boundaries in these counties. There were about ten counties total in this category. In the end we found that geocoded addresses from the [publicly available voter file](https://www6.sos.state.oh.us/ords/f?p=111:1) could draw “accurate-enough” precinct boundaries in the absence of a better option. Groups like the National States Geographic Information Council are also using voter addresses to geocode precinct boundaries with address range shapefiles. The general approach we settled on was to use the  to find the locations of currently registered voters and then triangulate plausible precinct boundaries using a nearest neighbor algorithm. The details of this algorithm are below. To illustrate the algorithm, we use Noble County, Ohio as an example. 
 
 ### Data
 
@@ -97,14 +97,17 @@ kable(noble_geo %>% select(RESIDENTIAL_ADDRESS1, RESIDENTIAL_CITY, RESIDENTIAL_S
 
 The other piece of necessary data is an underlying geographic unit for building the precincts. The natural choice is census blocks because in theory precinct boundaries do not split census blocks. Additionally, the method of digitizing we implemented uses census blocks to fill in precinct polygons Census blocks are the smallest geographic unit defined by the Census Bureau. In urban areas, census blocks are often analagous to city blocks, but this analogy does not hold in rural areas. The tigris (**cite!!**) package in R to accesses the census block shapefiles published by the Census Bureau (**cite!!**) for us. 
 
-```{r, out.width = "500px"}
-include_graphics("C:\\Users\\katie\\Documents\\honors\\R\\plots\\noble1.png")
-```
+To connect the voter file with the census blocks, we make use of a Census Bureau API through the tigris package in R (**cite!!**) that returns a census block ID for each valid address. In general, we find that 60 to 80 percent of the addresses are valid, meaning they can be processed by the API. Below on the left is a map highlighting the census blocks with no valid addresses and on the right is a map showing how many addresses are valid per census block. 
 
-```{r, out.width = "500px"}
-include_graphics("C:\\Users\\katie\\Documents\\honors\\R\\plots\\valid_addresses.png")
-```
+<br>
+<br>
 
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\R\\plots\\valid_addresses.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\R\\plots\\noble1.png"/>
+
+For the blocks with valid addresses, there is information in the voter file about what precinct that address belongs in. We define the precinct of a block with valid addresses to be the most common precinct of the listed addresses. Often these are unanimous, but in scenarios with data entry errors, split blocks, or other irregularities there may be multiple precincts listed in a block. 
+
+This leaves slightly fewer than half of the census blocks unclassified in most counties. To fill in the gaps, we wrote an algorithm to impute the values using a nearest neighbor model.
 
 ### Defining a model
 
