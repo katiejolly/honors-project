@@ -22,12 +22,21 @@ This site is a culmination and explanation of the work that went into this proje
 
 ## Overview
 
+<br>
+<br>
+
+<img width="100%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ohio-counties.png"/>
+
 
 ## Motivation <br>for the project
+
+<img width="100%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ohio-trial.PNG"/>
 
 
 
 ### Current status of voting rights in America
+
+
 
 
 ### Why are precincts important for voting rights?
@@ -38,10 +47,22 @@ In the United States, precinct boundaries are left up to the county to decide. O
 
 Recently in the news, with the election and decennial census approaching in 2020, there has been a resurgent interest in polling place accessibility, voter registration campaigns, and (sometimes hidden) voter disenfranchisement. For example, there’s an ACLU lawsuit in Georgia now over closing polling places in predominantly African-American areas.The Supreme Court also recently upheld Ohio’s practice of purging inactive voters from the voter rolls (Liptak, 2018). Many of the most pressing voting rights challenges require precise knowledge of where polling places are and who is using those polling places, as well as which voters are affected by new policies.
 
+
+
+<img width="100%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\nc2020.PNG"/>
+
 This project aims to make it easier for community members to learn more about their own precincts and create one way for people to support concerns about equity and fairness with numbers. We focus on Ohio, but we hope our methodology can be repeated in other states as well and support the work of groups working on similar research. 
 
 
 ## Collecting publicly <br> available data 
+
+<br>
+<br>
+<br>
+
+### Related posts
+
+[Map digitizing guide](http://www.katiejolly.io/portfolio/digitizing-guide/)
 
 ### Setting up the data collection
 
@@ -63,7 +84,7 @@ Among counties that provided us with PDF or paper maps, there was a wide range o
 
 There were approximately 450 total images to digitize. We hosted “digitizing workshops” and invited everyone at the research institute to attend with the promise of a free dinner and new technical skills. At the first one, I led a short lesson on georeferencing and map projection. We also made a step-by-step guide for georeferencing that was specific to these maps. Some images from the guide are shown below.
 
-<img src="images/digitizing_collage.png" alt="Collage of pages from our book on digitizing. Includes information about projection, adding images, checking data, and others." width="50%" height = "50%" align="center">
+<img src="images/digitizing_collage.png" alt="Collage of pages from our book on digitizing. Includes information about projection, adding images, checking data, and others." width="70%" height = "70%" align="center">
 
 During the second workshop we started vectorizing the georeferenced maps. This was prone to a few more technical issues, including difficult angles and fine-tuning. Due to time constraints we vectorized by selecting census blocks that were within the precincts because in most places, precinct lines followed census blocks. From a project management standpoint we usually assigned the georeferencing of a county to a group of two to four people and then assigned only one person for the vectorizing. This helped minimize opportunities for human error. 
 
@@ -79,6 +100,14 @@ In total we estimated that we spent about 400 person hours on the project. Some 
 
 
 ## Approximating <br>precinct maps
+
+<br>
+
+### Related posts
+
+[Writing a classification algorithm to build precinct shapefiles in Ohio](http://www.katiejolly.io/blog/2018-10-04/ohio-precinct-classification)
+
+[Evaluating our precinct boundary approximation algorithm with v-measure](http://www.katiejolly.io/blog/2018-10-27/vmeasure-ohio)
 
 <br> <br>
 
@@ -137,7 +166,18 @@ $$\textbf{else: } \quad \hat{p}_{k(x_i)nn} = NULL$$
 
 This ensures that spurious patterns from classifying with little data can be mitigated. Adding a minimum value that is too high prevents the algorithm from running to completion in some cases, so finding a balance is often a process of trial and error. We recommend a minimum percent ($\alpha$) no higher than 33 percent. 
 
+
+
+
 ### Evaluating the model
+
+One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We tested $\alpha \in \{0, 0.25, 0.33, 0.4, 0.5, 0.8\}$. 
+
+In general we found that $\alpha > 0.33$ was too strict. There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). 
+
+<img width="100%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_proportions.PNG"/>
+
+
 
 After defining and implementing a model for imputing precinct names, we want to have a method for evaluating these maps. Two factors make this more complex. First, we do not have true values for the counties that did not provide data. Second, many model assessments are built for a quantitative response. We also needed an assessment built specifically for spatial qualitative response variables.
 
@@ -148,3 +188,13 @@ In order to have "true" values for comparing the approximated ones, we independe
 If you would like to reproduce these maps, or produce them for your own work, we have compiled this algorithm into an R package. You can install it from the [GitHub repository](https://github.com/ykelly/approxprecincts) as it is not available on CRAN. 
 
 ## What can we <br>do with this?
+
+## More resources
+
+This group is certainly not the only one working on voting rights and data science for social good. Here is a starting list of other organizations to know about if you're interested in this work!
+
+...
+
+...
+
+...
