@@ -18,7 +18,7 @@
 
 /* Then we place our content with this style because we don't want it to be full width */
 .mycontent{
-      max-width: 900px !important;
+      max-width: 1500px !important;
       margin-left: auto;
       margin-right: auto;
       font-family: 'Montserrat';
@@ -65,7 +65,7 @@ a {
 
 
 body {
-  max-width: 800px;
+  max-width: 850px;
   margin: auto;
  padding: 1em;
  line-height: 20px ; 
