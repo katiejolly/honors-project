@@ -58,7 +58,6 @@ This project aims to make it easier for community members to learn more about th
 
 <br>
 <br>
-<br>
 
 ### Related posts
 
@@ -156,7 +155,7 @@ If we wanted a probabilistic model instead of this deterministic one, we could d
 
 As an improvement to the original model definition, we include a requirement that a minimum fraction of a block's neighborhood, $\alpha$ must be classified in order to make a classification decision. This condition is supplied by the user. In this case, our model becomes:
 
-$$\textbf{if: }\quad \frac{\sum_j^{k(x_i)}\mathbf{1} (y_j = NULL)}{k(x_i)} < \alpha$$
+$$\textbf{if: }\quad \frac{\sum_j^{k(x_i)}\mathbf{1} (y_j = NULL)}{k(x_i)} \geq \alpha$$
 
 $$\hat{p}_{k(x_i)nn} \in \text{argmax }N_l(x_i), \quad l \in \{1, 2, 3, ... L\}$$ 
 
@@ -171,9 +170,9 @@ This ensures that spurious patterns from classifying with little data can be mit
 
 ### Evaluating the model
 
-One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We tested $\alpha \in \{0, 0.25, 0.33, 0.4, 0.5, 0.8\}$. 
+One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We tested $\alpha \in \{0, 0.25, 0.35, 0.4, 0.5, 0.8\}$. 
 
-In general we found that $\alpha > 0.33$ was too strict. There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). 
+In general we found that $\alpha > 0.25$ was too strict in this particular county. There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). However, in other counties the "maximum minimum" proportion could be different. The best method is to try a variety in each context. 
 
 <img width="100%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_proportions.PNG"/>
 
@@ -190,6 +189,16 @@ If you would like to reproduce these maps, or produce them for your own work, we
 ## What can we <br>do with this?
 
 ## More resources
+
+<br>
+<br>
+
+### Related posts 
+
+[GIS/LIS Conference Presentation Resource Page](http://www.katiejolly.io/honors-project-ohio/)
+
+<br>
+<br>
 
 This group is certainly not the only one working on voting rights and data science for social good. Here is a starting list of other organizations to know about if you're interested in this work!
 
