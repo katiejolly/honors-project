@@ -141,7 +141,7 @@ This leaves slightly fewer than half of the census blocks unclassified in most c
 
 The idea behind our approximation method is to use nonparametric classification to impute the missing block precinct assignments. The initial idea comes from Tobler's first law of geography, "everything is related to everything else, but near things are more related than distant things." In this context, adjacent blocks are more related than non-adjacent blocks in terms of precinct assignment. This is true conceptually, but also many states require precincts to be contiguous polygons. We can formalize this idea with a nearest neighbor model that depends on k neighbors, where k is a function of the particular block. 
 
-We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. The difference is that $k$ varies by block $x_i$ in this case, so that parameter is instead $k(x_i)$. Different blocks have different numbers of adjacent neighbors, thus thus the neighborhood size is a function of the block. 
+We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$, of $I$ total blocks in a county. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. The difference is that $k$ varies by block $x_i$ in this case, so that parameter is instead $k(x_i)$. Different blocks have different numbers of adjacent neighbors, thus thus the neighborhood size is a function of the block. 
 
 From our set of $L$ possible precincts, the predicted precinct $\hat{p}_{k(x_i)nn}$ of a block $x_i$ is the most common precinct in its neighborhood of size $k(x_i)$, where $y_j$ is the precinct assignment of the $jth$ neighbor. The number of neighboring blocks in precinct $p_l$ is defined by $N_l(x_i)$. Ties for the most common precinct are broken at random.
 
@@ -178,11 +178,45 @@ In general we found that $\alpha > 0.25$ was too strict in this particular count
 
 <img width="100%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_proportions.PNG"/>
 
+We can also look at this process in detail for certain minimum proportions. Below are some maps that help detail this process.
+
+**right now only the minimum = 0 maps are included**
+
+**eventually I want the color scheme to match up with the plot above for all of the minimum values to make comparison easier**
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_1.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_2.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_3.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_4.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_5.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_6.png"/>
+
+
+
 
 After defining and implementing a model for imputing precinct names, we want to have a method for evaluating these maps. Two factors make this more complex. First, we do not have true values for the counties that did not provide data. Second, many model assessments are built for a quantitative response. We also needed an assessment built specifically for spatial qualitative response variables.
 
-In order to have "true" values for comparing the approximated ones, we independently generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure (**cite!!**), or v-measure. This measures the “sameness” of the different precinct labels, or how well two different precinct maps fit together in one domain (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition. We compute values for completeness, the average “sameness” of the regions with respect to partitions, and homogeneity, the average “sameness” of partitions with respect to regions. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match.
+In order to have "true" values for comparing the approximated ones, we independently generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure (**cite!!**), or v-measure. This measures the “sameness” of the different precinct labels, or how well two different precinct maps fit together in one domain (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition (and the individual units of the partition are the zones). We compute values for completeness, the average “sameness” of the regions with respect to zones, and homogeneity, the average “sameness” of zones with respect to regions. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match. The methodology for v-measure is defined below. 
 
+We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
+
+
+
+The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/).
+
+### Suggested workflow
+
+After the release of our upcoming R package `{approxprecincts}`, anyone will be able to implement the approximation algorithm. We currently do not implement v-measure code in our package, because the `{sabre}` package already does that well. Below I will demonstrate the general workflow for any Ohio county. Take note that the geocoding function speed is highly dependent on the number of voters registered in a county. We are yet to test how well random samples of voter addresses perform relative to the whole set, but that is something worth exploring for the sake of efficiency and robustness.
+
+This example is for Noble County, but the process is similar for any Ohio county.
+
+```{r eval = FALSE}
+county_voterfile <- load_voterfile(county = "Noble")
+
+county_blocks <- load_blocks(county = "Noble")
+```
 
 
 ### A reproducible process
