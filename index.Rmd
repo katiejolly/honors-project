@@ -166,6 +166,8 @@ $$\textbf{else: } \quad \hat{p}_{k(x_i)nn} = NULL$$
 
 This ensures that spurious patterns from classifying with little data can be mitigated. Adding a minimum value that is too high prevents the algorithm from running to completion in some cases, so finding a balance is often a process of trial and error.
 
+Once each block has a predicted precinct classification, we have the necessary information to build precinct boundaries. We use a [*dissolve*](https://pro.arcgis.com/en/pro-app/tool-reference/data-management/dissolve.htm) operation to aggregate blocks with the same precinct name. This essentially allows us to create an enclosing polygon around blocks of the same precinct, thus creating a precinct boundary.  
+
 In the next section, I will discuss some techniques for finding a balance between the strictness of our algorithm and the efficiency of the algorithm. 
 
 
@@ -226,6 +228,8 @@ When we look at this map, we see a few spatial patterns. First, we see a line of
 **insert map with arrow?**
 
 The spatial autocorrelation of our errors suggests latent patterns that our model cannot account for. Being able to identify covariates, such as the presence of the highway, adds to the information we have about what those latent variables might be. In this case, we know from prior knowledge that precinct boundaries often follow major roads or municipal boundaries. Through the census we can access this data. In future versions of the algorithm, we hope to include mechanisms for accounting for updating the probability that blocks are in the same precinct according to this outside information about other spatial patterns. 
+
+As with other machine learning methods, we consider the bias variance tradeoff in this model based on the parameter value $\alpha$. 
 
 
 ### Suggested workflow
