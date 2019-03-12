@@ -1,5 +1,6 @@
 ---
-date: "February 27, 2019"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+title: "Katie Jolly // MSCS Honors 2019"
 output: 
   html_document:
     css: styles.css
