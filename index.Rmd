@@ -184,6 +184,8 @@ We can also look at this process in detail for certain minimum proportions. Belo
 
 **eventually I want the color scheme to match up with the plot above for all of the minimum values to make comparison easier**
 
+<img width="55%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_initial.png"/>
+
 <img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_1.png"/>
 <img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_2.png"/>
 
@@ -202,6 +204,8 @@ In order to have "true" values for comparing the approximated ones, we independe
 
 We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
 
+**continue writing the rest of the process here!!** 
+
 
 
 The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/).
@@ -212,12 +216,32 @@ After the release of our upcoming R package `{approxprecincts}`, anyone will be 
 
 This example is for Noble County, but the process is similar for any Ohio county.
 
-```{r eval = FALSE}
+We start by initially just creating the first iteration.
+
+```{r eval = FALSE, include = TRUE, echo = TRUE}
 county_voterfile <- load_voterfile(county = "Noble")
 
 county_blocks <- load_blocks(county = "Noble")
+
+voterfile_geo <- geocode_voterfile(county_voterfile)
+
+iter_1 <- voterfile_geo %>%
+  join_voters_to_blocks() %>% # matches up voters with census blocks based on the geocoding process
+  find_neighbors(type = "rook") %>% # creates a vector of neighbors for each block, can be rook or queen adjacency
+  lookup_precincts_nn() %>% # creates a vector of precinct names with a name for each neighbor
+  classify_nn(alpha = 0) # finds the most common precinct name, if at least the minimum proportion is met
 ```
 
+After the first iteration is complete, we no longer need to look up the neighbors of each block anymore. We only need to start the process with updating the vector of precinct names to update our information about the map. 
+
+```{r eval = FALSE, include = TRUE, echo = TRUE}
+
+iter_2 <- iter_1 %>%
+  lookup_precincts_nn() %>%
+  classify_nn()
+```
+
+We repeat this process until all the blocks are classified. The function will print a message telling the user how many blocks are left after each iteration, to give an idea of performance over time. 
 
 ### A reproducible process
 
