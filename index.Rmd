@@ -211,6 +211,23 @@ We will call the county, our area of interest, $A$. The regionalization $R$, the
 
 The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/).
 
+To demostrate how we use v-measure, I will use Clark County as an example.For this county, we were given official precincts by the county. We also generated our own approximations using our model. 
+
+**insert side-by-side maps here!!** 
+
+Counties like Clark help validate our method, by telling us how closely our approximations match the actual map. It is not necessarily a definitive measure, but it can be used to give a general idea of model adequacy. 
+
+Intitially we implemented a precinct approximation model defined by $\alpha = 0$, meaning only one neighbor has to be classified to classify a block. When we calculated v-measure, we got an overall score of $0.97$. **check overall and completeness/homogeneity values**. V-measure also calculates local inhomogeneity, which gives an idea of exactly which $a_{zy}$ units are the most inhomogeneous, or poorly approximated according to this measure. 
+
+**insert local inhomogeneity map here!!**
+
+When we look at this map, we see a few spatial patterns. First, we see a line of inhomogeneity through the middle of the county. From outside research we know that this line tracks with a major highway. 
+
+**insert map with arrow?**
+
+The spatial autocorrelation of our errors suggests latent patterns that our model cannot account for. Being able to identify covariates, such as the presence of the highway, adds to the information we have about what those latent variables might be. In this case, we know from prior knowledge that precinct boundaries often follow major roads or municipal boundaries. Through the census we can access this data. In future versions of the algorithm, we hope to include mechanisms for accounting for updating the probability that blocks are in the same precinct according to this outside information about other spatial patterns. 
+
+
 ### Suggested workflow
 
 After the release of our upcoming R package `{approxprecincts}`, anyone will be able to implement the approximation algorithm. We currently do not implement v-measure code in our package, because the `{sabre}` package already does that well. Below I will demonstrate the general workflow for any Ohio county. Take note that the geocoding function speed is highly dependent on the number of voters registered in a county. We are yet to test how well random samples of voter addresses perform relative to the whole set, but that is something worth exploring for the sake of efficiency and robustness.
