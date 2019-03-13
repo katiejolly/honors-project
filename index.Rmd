@@ -207,7 +207,10 @@ In order to have "true" values for comparing the approximated ones, we independe
 
 We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
 
+
 **continue writing the rest of the process here!!** 
+
+*completeness is a weighted sum of the ratio of variance of regions in zone w to the variance of regions in the domain, weighted by area*
 
 
 
