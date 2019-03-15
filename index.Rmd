@@ -164,11 +164,11 @@ $$\text{where } N_l(x_i):= \sum_{j=1}^{k(x_i)}\mathbf{1}(y_j=p_l)$$
 
 $$\textbf{else: } \quad \hat{p}_{k(x_i)nn} = NULL$$
 
-This ensures that spurious patterns from classifying with little data can be mitigated. Adding a minimum value that is too high prevents the algorithm from running to completion in some cases, so finding a balance is often a process of trial and error.
+This ensures that spurious patterns from classifying with little data can be mitigated. Adding a minimum value that is too high prevents the algorithm from converging, or running to completion in some cases, so finding a balance is often a process of trial and error.
 
 Once each block has a predicted precinct classification, we have the necessary information to build precinct boundaries. We use a [*dissolve*](https://pro.arcgis.com/en/pro-app/tool-reference/data-management/dissolve.htm) operation to aggregate blocks with the same precinct name. This essentially allows us to create an enclosing polygon around blocks of the same precinct, thus creating a precinct boundary.  
 
-In the next section, I will discuss some techniques for finding a balance between the strictness of our algorithm and the efficiency of the algorithm. 
+In the next section, I will discuss some techniques for finding a balance between the strictness of our algorithm and the convergence of the approximation. 
 
 
 
@@ -179,13 +179,19 @@ One question that we had was how robust the algorithm was to changes to the mini
 
 In general we found that $\alpha > 0.25$ was too strict in this particular county. There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). However, in other counties the "maximum minimum" proportion could be different. The best method is to try a variety in each context. 
 
+<br>
+<br>
+<br>
+
 <img width="100%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_proportions.PNG"/>
 
-We can also look at this process in detail for certain minimum proportions. Below are some maps that help detail this process.
+<br>
+<br>
+<br>
 
-**right now only the minimum = 0 maps are included**
+We can also look at this process in detail for certain minimum proportions. Below are some maps that help detail this process. This set of maps corresponds to the convergence process when $\alpha = 0$. To see the maps for the other values plotted on the above graph, please see the **Appendix: Figures** section at the bottom of this page.  
 
-**eventually I want the color scheme to match up with the plot above for all of the minimum values to make comparison easier**
+
 
 <img width="55%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_initial.png"/>
 
@@ -198,23 +204,49 @@ We can also look at this process in detail for certain minimum proportions. Belo
 <img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_5.png"/>
 <img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_6.png"/>
 
-
+<br>
+<br>
+<br>
+<br>
 
 
 After defining and implementing a model for imputing precinct names, we want to have a method for evaluating these maps. Two factors make this more complex. First, we do not have true values for the counties that did not provide data. Second, many model assessments are built for a quantitative response. We also needed an assessment built specifically for spatial qualitative response variables.
 
-In order to have "true" values for comparing the approximated ones, we independently generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure (**cite!!**), or v-measure. This measures the “sameness” of the different precinct labels, or how well two different precinct maps fit together in one domain (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition (and the individual units of the partition are the zones). We compute values for completeness, the average “sameness” of the regions with respect to zones, and homogeneity, the average “sameness” of zones with respect to regions. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match. The methodology for v-measure is defined below. 
+In order to have "true" values for comparing the approximated ones, we independently generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure (**cite!!**), or v-measure. The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/). V-measure evaluates the “sameness” of the different precinct labels, or how well two different precinct maps fit together in one domain (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition (and the individual units of the partition are the zones). We compute values for completeness, the average “sameness” of the regions with respect to zones, and homogeneity, the average “sameness” of zones with respect to regions. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match. The methodology for v-measure is defined below. 
 
 We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
 
+Inhomogeneity of the partion with respect to the regionalization can be written out generally as $$\sum_{y=1}^m(\frac{A_y}{A})\frac{\text{variance of regions in zone y}}{\text{variance of regions in the domain}}$$
 
-**continue writing the rest of the process here!!** 
+This is essentially a weighted sum of the ratios of variances, or how inhomogenous a zone is in terms of the regions compared to the whole domain.
 
-*completeness is a weighted sum of the ratio of variance of regions in zone w to the variance of regions in the domain, weighted by area*
+We can measure the variance of the regions in zone $j$ in terms of the Shannon entropy $S$. 
 
+$$S^R_y = -\sum_{z=1}^n \frac{a_{zy}}{a_y}\text{log}\frac{a_{zy}}{a_y}$$
 
+This value will be 0 when zone $j$ is completely homogenous, or contained in a single region. The value increases as zone $j$ is subdivided across more regions. In order to compare the inhomogeneity of a particular zone with the inhomogenity of the region (to be able to say whether or not that zone is more or less inhomogeneous than expected given the context of the map), we can also find the dispersion of regions across the whole domain with the Shannon entropy.
 
-The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/).
+$$S^R = -\sum_{z = 1}^n\frac{A_z}{A}\text{log}\frac{A_z}{A}$$
+
+We can calculate the inhomogeneity of partition with respect to regionalization across the domain as an area-weighted average of the $\frac{S_z^R}{S_R}$ ratios. These values can range from 0 in the perfectly homogenous case where every zone is nested in only one region to 1 where a zone is spread across all regions of the domain. Inhomogeneity can be difficult to conceptualize, though, so we find homogeneity $h$ instead.
+
+$$h = 1 - \sum_{y=1}^m(\frac{A_y}{A})\frac{S^R_y}{S^R}$$
+
+Homogeneity is only one view of spatial agreement between the two maps. You can think of an extreme case where there is only one region that covers all of the zones. There will be perfect homogeneity (each zone is contained by only one region), but there is no reason to say the maps are spatially associated. If we think of association from the perspective of that one region, it is broken up across all zones and thus would give a 0 for homogeneity. 
+
+The analagous measure for homogeneity of the regionalization with respect to the partition is completeness $c$. The calculation is the same as homogeneity, but the placements of zones and regions in the equations are switched. The process is detailed below.
+
+$$S^W_z = -\sum_{y =1}^m\frac{a_{zy}}{A_z}\text{log}\frac{a_{zy}}{A_z}$$
+
+$$S^W = -\sum_{y = 1}^m\frac{A_y}{A}\log\frac{A_y}{A}$$
+
+$$c = 1 - \sum_{z=1}^n(\frac{A_z}{A})\frac{S^W_z}{S^W}$$
+
+Possible values of completeness follow an analagous pattern to those for homogeneity. We then compute the harmonic mean of homogeneity and completeness with an optional weighting parameter $\beta$ that can give more or less weight to either value. There are feasibly scenarios in which homogeneity or completeness may be more important, but in this context we weight them equally, setting $\beta = 1$. When $\beta > 1$ for example, completeness is given more weight than homogeneity. The opposite is true when $\beta < 1$.  V-measure $V_\beta$ can range from 0 to 1, same as homogeneity and completeness individually. When $V_\beta$ = 0, that indicates no spatial association, or agreement, between the two maps. Alternatively, when $V_\beta = 1$, we say there is perfect spatial agreement between the two maps. 
+
+$$V_\beta = \frac{(1 + \beta)hc}{(\beta h) + c}$$
+
+Even though $V_\beta$ only gives a global measure of association, implied in these equations are the local measures of association as well. We can map the ratios $\frac{S^W_z}{S^W}$ and $\frac{S^R_y}{S^R}$ to see local association from both perspectives. 
 
 To demostrate how we use v-measure, I will use Clark County as an example.For this county, we were given official precincts by the county. We also generated our own approximations using our model. 
 
@@ -237,7 +269,7 @@ As with other machine learning methods, we consider the bias variance tradeoff i
 
 ### Suggested workflow
 
-After the release of our upcoming R package `{approxprecincts}`, anyone will be able to implement the approximation algorithm. We currently do not implement v-measure code in our package, because the `{sabre}` package already does that well. Below I will demonstrate the general workflow for any Ohio county. Take note that the geocoding function speed is highly dependent on the number of voters registered in a county. We are yet to test how well random samples of voter addresses perform relative to the whole set, but that is something worth exploring for the sake of efficiency and robustness.
+After the release of our upcoming R package `{approxprecincts}`, anyone will be able to implement the approximation algorithm. We currently do not implement v-measure code in our package, because the `{sabre}` package already does that well. Below I will demonstrate the general workflow for any Ohio county. Take note that the geocoding function speed is highly dependent on the number of voters registered in a county. We are yet to test how well random samples of voter addresses perform relative to the whole set, but that is something worth exploring for the sake of convergence and robustness.
 
 This example is for Noble County, but the process is similar for any Ohio county.
 
@@ -268,9 +300,24 @@ iter_2 <- iter_1 %>%
 
 We repeat this process until all the blocks are classified. The function will print a message telling the user how many blocks are left after each iteration, to give an idea of performance over time. 
 
-### A reproducible process
+### Appedix: A reproducible process
 
 If you would like to reproduce these maps, or produce them for your own work, we have compiled this algorithm into an R package. You can install it from the [GitHub repository](https://github.com/ykelly/approxprecincts) as it is not available on CRAN. 
+
+### Appendix: Figures
+
+**Convergence of algorithm when $\alpha = 0$**
+
+<img width="55%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_initial.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_1.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_2.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_3.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_4.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_5.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_6.png"/>
 
 ## What can we <br>do with this?
 
