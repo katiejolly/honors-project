@@ -214,13 +214,13 @@ After defining and implementing a model for imputing precinct names, we want to 
 
 In order to have "true" values for comparing the approximated ones, we independently generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure (**cite!!**), or v-measure. The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/). V-measure evaluates the “sameness” of the different precinct labels, or how well two different precinct maps fit together in one domain (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition (and the individual units of the partition are the zones). We compute values for completeness, the average “sameness” of the regions with respect to zones, and homogeneity, the average “sameness” of zones with respect to regions. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match. The methodology for v-measure is defined below. 
 
-We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
+We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | y = 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
 
 Inhomogeneity of the partion with respect to the regionalization can be written out generally as $$\sum_{y=1}^m(\frac{A_y}{A})\frac{\text{variance of regions in zone y}}{\text{variance of regions in the domain}}$$
 
 This is essentially a weighted sum of the ratios of variances, or how inhomogenous a zone is in terms of the regions compared to the whole domain.
 
-We can measure the variance of the regions in zone $j$ in terms of the Shannon entropy $S$. 
+We can measure the variance of the regions in zone $y$ in terms of the Shannon entropy $S$. 
 
 $$S^R_y = -\sum_{z=1}^n \frac{a_{zy}}{a_y}\text{log}\frac{a_{zy}}{a_y}$$
 
