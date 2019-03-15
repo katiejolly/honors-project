@@ -246,7 +246,7 @@ Possible values of completeness follow an analagous pattern to those for homogen
 
 $$V_\beta = \frac{(1 + \beta)hc}{(\beta h) + c}$$
 
-Even though $V_\beta$ only gives a global measure of association, implied in these equations are the local measures of association as well. We can map the ratios $\frac{S^W_z}{S^W}$ and $\frac{S^R_y}{S^R}$ to see local association from both perspectives. 
+Even though $V_\beta$ only gives a global measure of association, implied in these equations are the local measures of association as well. We can map the ratios $\frac{S^W_z}{S^W}$ and $\frac{S^R_y}{S^R}$ to see local association from both perspectives. To further check the robustness of our algorithm to different minimum proportion values, we can calculate V-measure for maps produced at different thresholds for the same county and compare the degree of spatial association. Even though we are not ultimately looking to approximate the counties for which we already have data, and thus can calculate V-measure, this process helps us learn more about how the algorithm is working in the general case. Additionally, we can compare different approximations to each other to find where local inhomogeneity is highest, or where we see the biggest changes due to threshold specification. 
 
 To demostrate how we use v-measure, I will use Clark County as an example.For this county, we were given official precincts by the county. We also generated our own approximations using our model. 
 
