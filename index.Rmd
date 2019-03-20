@@ -134,9 +134,7 @@ To connect the voter file with the census blocks, we make use of a Census Bureau
 <img width="45%" src="C:\\Users\\katie\\Documents\\honors\\R\\plots\\valid_addresses.png"/>
 <img width="45%" src="C:\\Users\\katie\\Documents\\honors\\R\\plots\\noble1.png"/>
 
-For the blocks with valid addresses, there is information in the voter file about what precinct that address belongs in. We define the precinct of a block with valid addresses to be the most common precinct of the listed addresses. Often these are unanimous, but in scenarios with data entry errors, split blocks, or other irregularities there may be multiple precincts listed in a block. 
-
-This leaves slightly fewer than half of the census blocks unclassified in most counties. To fill in the gaps, we wrote an algorithm to impute the values using a nearest neighbor model.
+For the blocks with valid addresses, there is information in the voter file about what precinct that address belongs in. We define the precinct of a block with valid addresses to be the most common precinct of the listed addresses. Often these are unanimous, but in scenarios with data entry errors, split blocks, or other irregularities there may be multiple precincts listed in a block. This leaves slightly fewer than half of the census blocks unclassified in most counties. To fill in the gaps, we wrote an algorithm to impute the values using a nearest neighbor model.
 
 ### Defining a model
 
@@ -154,9 +152,7 @@ $$\text{where } N_l(x_i):= \sum_{j=1}^{k(x_i)}\mathbf{1}(y_{ij}=p_l)$$
 
 After we run this model, there will still be unclassified blocks. This comes from the fact that not every unclassified block has classified neighbors. This then becomes an iterative model. The process is repeated until every block is classified. Blocks classified in previous iterations become part of the training set, so each iteration has more training data than previous ones. 
 
-If we wanted a probabilistic model instead of this deterministic one, we could define the probability of block $x_i$ being in precinct $p_l$ as the fraction of its neighbors in that precinct. 
-
-As an improvement to the original model definition, we include a requirement that a minimum fraction of a block's neighborhood, $\alpha$ must be classified in order to make a classification decision. This condition is supplied by the user. In this case, our model becomes:
+If we wanted a nondeterministic model instead of this deterministic one, we could define the probability of block $x_i$ being in precinct $p_l$ as the fraction of its neighbors in that precinct. This model, as written, is deterministic because it gives only one precinct name for each block. The one precinct name is the most likely precinct name. To make it nondeterministic, instead of only looking for the most likely precinct name, we could involve more decision-making on the part of the user by giving the probability of each precinct name for a given block and allow the user to choose from that list of probabilities. The probability of a precinct name for a given block could be defined as the percent of its neighbors that are in that precinct. Doing the classification in a nondeterministic way would give more leverage to the user to make judgement calls based on outside information sources that are often correlated with precinct boundaries, like the location of major roads or minicipal boundaries. Along with allowing the integration of outside information provided by the user, there are other changes we can make to our algorithm that allow for more flexibility. As an improvement to the original model definition, we can include a requirement that a minimum fraction of a block's neighborhood, $\alpha$ must be classified in order to make a classification decision. This condition is supplied by the user. In this case, our model becomes:
 
 
 $$
@@ -169,20 +165,18 @@ $$
 \end{split}
 $$
 
-This process helps to mitigate spurious patterns in the classification that arise from having too little data about a block's neighborhood. Adding a minimum value that is too high prevents the algorithm from converging, or running to completion in some cases, so finding a balance is often a process of trial and error.
+This process helps to mitigate spurious patterns in the classification that arise from having too little data about a block's neighborhood. Adding a minimum value that is too high prevents the algorithm from converging, or running to completion in some cases. Finding a balance is often a process of trial and error.
 
-Once each block has a predicted precinct classification, we have the necessary information to build precinct boundaries. We use a [*dissolve*](https://pro.arcgis.com/en/pro-app/tool-reference/data-management/dissolve.htm) operation to aggregate blocks with the same precinct name. This essentially allows us to create an enclosing polygon around blocks of the same precinct, thus creating a precinct boundary.  
-
-In the next section, I will discuss some techniques for finding a balance between the strictness of our algorithm and the convergence of the approximation. 
+Once each block has a predicted precinct classification, we have the necessary information to build precinct boundaries. We use a [*dissolve*](https://pro.arcgis.com/en/pro-app/tool-reference/data-management/dissolve.htm) operation to aggregate blocks with the same precinct name. Dissolving is an operation that finds polygons (in this case, census blocks) that share a common attribute and then combines them into a larger polygon made of up the smaller parts. Here we dissolve on the precinct name, so we create larger precinct polygons made up of the census blocks as the base units. This then allows us to have a complete shapefile of the voting precincts in a county, which was our initial goal. In the next section, I will discuss some techniques for conducting a sensitivity analysis to find a balance between the strictness of our algorithm and the convergence of the approximation. 
 
 
 
 
-### Evaluating the model
+### Conducting a sensitivity analysis
 
-One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We tested $\alpha \in \{0, 0.25, 0.35, 0.4, 0.5, 0.8\}$. 
+One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We first tested $\alpha \in \{0, 0.25, 0.35, 0.4, 0.5, 0.8\}$ to see how the maps would change with different minimum proportions set for classification. We expected that a value somewhere in the middle of the set would be best. 
 
-In general we found that $\alpha > 0.25$ was too strict in this particular county. There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). However, in other counties the "maximum minimum" proportion could be different. The best method is to try a variety in each context. 
+In general we found that $\alpha > 0.25$ was too strict in this particular county (Noble). There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). However, in other counties the "maximum minimum" proportion could be different. The best method is to try a variety in each context. Below is a plot illustrating this phenomemon. Each line on the plot follows the path of the classification at different values of $\alpha$ and it is measuring the number of census blocks in the county that are still unclassified after that iteration, Iteration number can be found on the x axis. For example, the yellow line illustrates what happens when we set the minimum proportion to 0.8, or 80 percent of a block's neighborhood has to be classified in order to classify it. In particular, notice that after a sharp initial drop (though less sharp than the other lines), it plateaus at about 800 blocks still classified after the first iteration. Meanwhile, the gray line that shows what happens when we make no requirements for a block's neighborhood prior to classification. We see a very sharp drop after the first iteration and it continues to drop until all of the block's are classified after the sixth iteration. The lines in the middle are intermediate minimum values between our two extremes. In this particular example, notice that only the green and gray lines reach $y=0$, or converge to a completed approximation. It's hard to see in this particular view, but all of the other lines reach horizontal asymptotes where they cannot continue classifying any further. Future research could investigate the impact of using a stricter $\alpha$ value until reach an asymptote and then loosening the requirements to allow it to proceed.
 
 <br>
 <br>
@@ -194,7 +188,7 @@ In general we found that $\alpha > 0.25$ was too strict in this particular count
 <br>
 <br>
 
-We can also look at this process in detail for certain minimum proportions. Below are some maps that help detail this process. This set of maps corresponds to the convergence process when $\alpha = 0$. To see the maps for the other values plotted on the above graph, please see the **Appendix: Figures** section at the bottom of this page.  
+We can also look at this process in detail for certain minimum proportions. Below are some maps that help detail this process. This set of maps corresponds to the convergence process when $\alpha = 0$. These maps show a view of what is actually happening at each point on the line plot above for one particular line. For example, between the initial map and the first iteration we see the sharp decrease in the number of unclassified blocks that we saw on the plot above as well. To see the maps for the other values plotted on the above graph, please see the **Appendix: Figures** section at the bottom of this page.  
 
 
 
@@ -221,11 +215,9 @@ In order to have "true" values for comparing the approximated ones, we independe
 
 We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | y = 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
 
-Inhomogeneity of the partion with respect to the regionalization can be written out generally as $$\sum_{y=1}^m(\frac{A_y}{A})\frac{\text{variance of regions in zone y}}{\text{variance of regions in the domain}}$$
+Inhomogeneity of the partion with respect to the regionalization can be written out generally as: $$\sum_{y=1}^m(\frac{A_y}{A})\frac{\text{variance of regions in zone y}}{\text{variance of regions in the domain}}$$
 
-This is essentially a weighted sum of the ratios of variances, or how inhomogenous a zone is in terms of the regions compared to the whole domain.
-
-We can measure the variance of the regions in zone $y$ in terms of the Shannon entropy $S$. 
+This is essentially a weighted sum of the ratios of variances, or how inhomogenous a zone is in terms of the regions compared to the whole domain. We can measure the variance of the regions in zone $y$ in terms of the Shannon entropy $S$. 
 
 $$S^R_y = -\sum_{z=1}^n \frac{a_{zy}}{a_y}\text{log}\frac{a_{zy}}{a_y}$$
 
@@ -253,7 +245,7 @@ $$V_\beta = \frac{(1 + \beta)hc}{(\beta h) + c}$$
 
 Even though $V_\beta$ only gives a global measure of association, implied in these equations are the local measures of association as well. We can map the ratios $\frac{S^W_z}{S^W}$ and $\frac{S^R_y}{S^R}$ to see local association from both perspectives. To further check the robustness of our algorithm to different minimum proportion values, we can calculate V-measure for maps produced at different thresholds for the same county and compare the degree of spatial association. Even though we are not ultimately looking to approximate the counties for which we already have data, and thus can calculate V-measure, this process helps us learn more about how the algorithm is working in the general case. Additionally, we can compare different approximations to each other to find where local inhomogeneity is highest, or where we see the biggest changes due to threshold specification. 
 
-To demostrate how we use v-measure, I will use Clark County as an example.For this county, we were given official precincts by the county. We also generated our own approximations using our model. 
+To demostrate how we use v-measure, I will use Clark County as an example. For this county, we were given official precincts by the county. We also generated our own approximations using our model. 
 
 **insert side-by-side maps here!!** 
 
