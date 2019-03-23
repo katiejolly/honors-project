@@ -321,6 +321,35 @@ If you would like to reproduce these maps, or produce them for your own work, we
 <img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_0_6.png"/>
 
 
+**Convergence of algorithm when $\alpha = 0.5$**
+
+<img width="55%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_1.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_2.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_3.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_4.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_5.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_6.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_7.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_8.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_9.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_10.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_11.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_12.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_13.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_14.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_15.png"/>
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\noble_5_16.png"/>
+
+It is hard to see from the static maps but there is no change from the 14th to the 15th iteration, meaning the process will not eventually converge to a completed map. In this case, the minimum proportion is too strict. 
+
 
 ## What can we <br>do with this?
 
