@@ -169,7 +169,11 @@ This process helps to mitigate spurious patterns in the classification that aris
 
 Once each block has a predicted precinct classification, we have the necessary information to build precinct boundaries. We use a [*dissolve*](https://pro.arcgis.com/en/pro-app/tool-reference/data-management/dissolve.htm) operation to aggregate blocks with the same precinct name. Dissolving is an operation that finds polygons (in this case, census blocks) that share a common attribute and then combines them into a larger polygon made of up the smaller parts. Here we dissolve on the precinct name, so we create larger precinct polygons made up of the census blocks as the base units. This then allows us to have a complete shapefile of the voting precincts in a county, which was our initial goal. In the next section, I will discuss some techniques for conducting a sensitivity analysis to find a balance between the strictness of our algorithm and the convergence of the approximation. 
 
+### A simplified example
 
+In this section I will walk through how this algorithm works for one particular block. This example will focus on the center block of this area. Its neighbors are denoted by lines across the shared boundary. 
+
+<img width="100%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\rook_example.PNG"/>
 
 
 ### Conducting a sensitivity analysis
