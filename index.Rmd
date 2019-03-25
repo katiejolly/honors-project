@@ -171,9 +171,22 @@ Once each block has a predicted precinct classification, we have the necessary i
 
 ### A simplified example
 
-In this section I will walk through how this algorithm works for one particular block. This example will focus on the center block of this area. Its neighbors are denoted by lines across the shared boundary. 
+In this section I will walk through how this algorithm works for one particular block. This example will focus on the center block of this area.
 
-<img width="100%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\rook_example.PNG"/>
+
+<img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex1.png"/>
+
+We start this process with the addresses of registered voters. We can then use the census API to get the census block ID for each voter. We also know the precinct of each voter, color-coded on the diagram below. 
+
+<img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex2.png"/>
+
+With this information, we can classify the blocks with registered voters to one of the two precinct color codes we have here. This classification is based on the most common precinct of the voters in that block. In cases where we see multiple precincts in one block (as in the top right block), we use "majority rules." 
+
+<img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex3.png"/>
+
+<img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex4.png"/>
+
+<img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex5.png"/>
 
 
 ### Conducting a sensitivity analysis
