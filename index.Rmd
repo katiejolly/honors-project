@@ -339,6 +339,10 @@ When we look at this map, we see a few spatial patterns. First, we see a line of
 
 The spatial autocorrelation of our errors suggests latent patterns that our model cannot account for. Being able to identify covariates, such as the presence of the highway, adds to the information we have about what those latent variables might be. In this case, we know from prior knowledge that precinct boundaries often follow major roads or municipal boundaries. Through the census we can access this data. In future versions of the algorithm, we hope to include mechanisms for accounting for updating the probability that blocks are in the same precinct according to this outside information about other spatial patterns. 
 
+In summary, there are two points to be made with respect to model quality. First, if we require more of a block's neighborhood to be classified, there is a point after which we cannot continue to classify blocks. This means we need to find an intermediate value to allow for some caution without being overly conservative in our approximation. 
+
+Second, this method does reasonably well with respect to inhomogeneity and completeness. We see more errors in urban areas than in rural ones. We hypothesize that this is because urban precincts tend to be more complex, and those complexities are hard to capture with the current process. 
+
 
 ### Suggested workflow
 
