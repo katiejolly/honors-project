@@ -171,25 +171,58 @@ Once each block has a predicted precinct classification, we have the necessary i
 
 ### A simplified example
 
-In this section I will walk through how this algorithm works for one particular block. This example will focus on the center block of this area.
+In this section I will walk through how this algorithm works for one particular block. This example will focus on the center block of this area. For simplicity's sake, we will assume that this area has only two possible precincts: blue or purple.
 
+<br>
+<br>
 
 <img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex1.png"/>
 
-We start this process with the addresses of registered voters. We can then use the census API to get the census block ID for each voter. We also know the precinct of each voter, color-coded on the diagram below. 
+<br> 
+<br>
+
+We start this process with the addresses of registered voters. We can then use the census API to get the census block ID for each voter. We also know the precinct of each voter, color-coded on the diagram below.
+
+<br>
+<br>
 
 <img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex2.png"/>
 
+<br>
+<br>
+
 With this information, we can classify the blocks with registered voters to one of the two precinct color codes we have here. This classification is based on the most common precinct of the voters in that block. In cases where we see multiple precincts in one block (as in the top right block), we use "majority rules." 
+
+<br>
+<br>
 
 <img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex3.png"/>
 
+<br>
+<br>
+
+<br>
+<br>
+
 <img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex4.png"/>
+
+<br>
+<br>
+
+<br>
+<br>
 
 <img width="40%" align = "middle"  src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ex5.png"/>
 
+<br>
+<br>
 
-### Conducting a sensitivity analysis
+### Checking model quality
+
+<br>
+<br>
+
+#### Conducting a sensitivity analysis
 
 One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We first tested $\alpha \in \{0, 0.25, 0.35, 0.4, 0.5, 0.8\}$ to see how the maps would change with different minimum proportions set for classification. We expected that a value somewhere in the middle of the set would be best. 
 
@@ -224,6 +257,12 @@ We can also look at this process in detail for certain minimum proportions. Belo
 <br>
 <br>
 <br>
+
+#### Assessing model accuracy
+
+<br>
+<br>
+
 
 
 After defining and implementing a model for imputing precinct names, we want to have a method for evaluating these maps. Two factors make this more complex. First, we do not have true values for the counties that did not provide data. Second, many model assessments are built for a quantitative response. We also needed an assessment built specifically for spatial qualitative response variables.
@@ -277,8 +316,6 @@ When we look at this map, we see a few spatial patterns. First, we see a line of
 **insert map with arrow?**
 
 The spatial autocorrelation of our errors suggests latent patterns that our model cannot account for. Being able to identify covariates, such as the presence of the highway, adds to the information we have about what those latent variables might be. In this case, we know from prior knowledge that precinct boundaries often follow major roads or municipal boundaries. Through the census we can access this data. In future versions of the algorithm, we hope to include mechanisms for accounting for updating the probability that blocks are in the same precinct according to this outside information about other spatial patterns. 
-
-As with other machine learning methods, we consider the bias variance tradeoff in this model based on the parameter value $\alpha$. In this case, we do not consider $k(x_i)$ directly because the number of neighbors used for classification is not necessarily the size of a block's neighborhood. If $\alpha$ is low, and therefore we can use a small subset of neighbors, our estimates will be highly variable depending on what data we have available initially. A few differences in our initial data can change our estimates significantly since the process works iteratively.  
 
 
 ### Suggested workflow
@@ -378,10 +415,10 @@ It is hard to see from the static maps but there is no change from the 14th to t
 <br>
 <br>
 
-This group is certainly not the only one working on voting rights and data science for social good. Here is a starting list of other organizations to know about if you're interested in this work!
+This group is certainly not the only one working on voting rights and data science for social good. Here is a starting list of other organizations and resources to know about if you're interested in this work!
 
-...
+* [Changing the math on gerrymandering by Olivia Walch](https://thenib.com/changing-the-math-on-gerrymandering)
 
-...
+* [Metric Geometry and Gerrymandering Group](https://mggg.org/)
 
 ...
