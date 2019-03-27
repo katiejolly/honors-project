@@ -201,6 +201,8 @@ With this information, we can classify the blocks with registered voters to one 
 <br>
 <br>
 
+We now have the necessary information to classify the center block (our block of interest). We start by defining the **rook neighborhood**. This neighborhood is defined as any block that shares multiple points (for example, it cannot just touch on the corner). Below you will see the highlighted rook neighborhood for the center block. 
+
 <br>
 <br>
 
@@ -209,6 +211,20 @@ With this information, we can classify the blocks with registered voters to one 
 <br>
 <br>
 
+We then count the number of blocks in the neighborhood of a given precinct. 
+
+<br>
+<br>
+
+| Blue precinct | Purple precinct | NULL |
+|---------------|-----------------|---------|
+| 2 blocks | 1 block | 1 block |
+
+<br>
+<br>
+
+When we find the most common precinct, we disregard the NULL blocks. In this case, the most common precinct is **blue**. We have not set any restriction on the minimum proportion of blocks in the neighborhood that have to be classified, so we do not have to check that value. Below you will see a diagram with this classification made for the center block. 
+
 <br>
 <br>
 
@@ -216,6 +232,8 @@ With this information, we can classify the blocks with registered voters to one 
 
 <br>
 <br>
+
+In practice, we do not focus only on one block at a time. Rather, we look at any unclassified block that has unclassified neighbors. To do that, we simply extend this process to look at many blocks at once. 
 
 ### Checking model quality
 
