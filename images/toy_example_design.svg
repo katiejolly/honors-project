@@ -175,10 +175,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="350.62425"
+     inkscape:cx="167.12425"
      inkscape:cy="312.76967"
      inkscape:document-units="mm"
-     inkscape:current-layer="g51977"
+     inkscape:current-layer="g3076"
      showgrid="false"
      units="in"
      inkscape:window-width="1920"
@@ -194,7 +194,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1112,7 +1112,7 @@
      inkscape:groupmode="layer"
      id="g51977"
      transform="translate(0,-144.59998)"
-     style="display:inline">
+     style="display:none">
     <rect
        style="fill:#94bfc6;fill-opacity:1;stroke:#2d5787;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        id="rect51899"
@@ -1317,4 +1317,229 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara51963"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1">NULL</flowPara></flowRoot>  </g>
+  <g
+     style="display:inline"
+     transform="translate(0,-144.59998)"
+     id="g3076"
+     inkscape:groupmode="layer"
+     inkscape:label="final class copy">
+    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="144.49998"
+       x="0.10000229"
+       height="50.799999"
+       width="50.799999"
+       id="rect3008"
+       style="fill:#94bfc6;fill-opacity:1;stroke:#2d5787;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="246.09999"
+       x="101.7"
+       height="50.799999"
+       width="50.799999"
+       id="rect3016"
+       style="fill:#9f3f80;fill-opacity:1;stroke:#2d5787;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="144.49998"
+       x="50.899998"
+       height="50.799999"
+       width="50.799999"
+       id="rect3056-9-2"
+       style="display:inline;fill:#f2f2f2;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="195.3"
+       x="50.900002"
+       height="50.799999"
+       width="50.799999"
+       id="rect3056-9-9"
+       style="display:inline;fill:#f2f2f2;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <rect
+       ry="0"
+       transform="scale(-1)"
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="-296.89999"
+       x="-50.900002"
+       height="50.800003"
+       width="50.799999"
+       id="rect3018"
+       style="fill:#f4f4f4;fill-opacity:1;stroke:#2d5787;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <flowRoot
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       transform="matrix(0.26458333,0,0,0.26458333,-4.3349805,90.676698)"
+       style="font-style:normal;font-weight:normal;font-size:16px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot3028"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3024"><rect
+           y="268.02542"
+           x="22.897738"
+           height="145.40062"
+           width="119.06822"
+           id="rect3022" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start"
+         id="flowPara3026" /></flowRoot>    <flowRoot
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       transform="matrix(0.26458333,0,0,0.26458333,57.006875,141.72273)"
+       style="font-style:normal;font-weight:normal;font-size:16px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot3036"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3032"><rect
+           y="268.02542"
+           x="22.897738"
+           height="145.40062"
+           width="119.06822"
+           id="rect3030" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#004455"
+         id="flowPara3034">census block that we want to classify</flowPara></flowRoot>    <path
+       inkscape:connector-curvature="0"
+       id="path3038"
+       d="m 61.39232,-187.96167 29.373243,-53.74679"
+       style="fill:#d7e3f4;stroke:#d6dddf;stroke-width:0.38599032px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <flowRoot
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       transform="matrix(0.26458333,0,0,0.26458333,6.3113177,195.29924)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;line-height:1.25;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#767676;fill-opacity:1;stroke:none"
+       id="flowRoot3046"
+       xml:space="preserve"><flowRegion
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowRegion3042"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+           y="268.02542"
+           x="22.897738"
+           height="145.40062"
+           width="119.06822"
+           id="rect3040" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowPara3044">NULL</flowPara></flowRoot>    <flowRoot
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       transform="matrix(0.26458333,0,0,0.26458333,56.031004,195.22586)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;line-height:1.25;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#767676;fill-opacity:1;stroke:none"
+       id="flowRoot3054"
+       xml:space="preserve"><flowRegion
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowRegion3050"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+           y="268.02542"
+           x="22.897738"
+           height="145.40062"
+           width="119.06822"
+           id="rect3048" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowPara3052">NULL</flowPara></flowRoot>    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="246.09999"
+       x="50.899998"
+       height="50.799999"
+       width="50.799999"
+       id="rect3056"
+       style="fill:#f2f2f2;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="195.29999"
+       x="101.7"
+       height="50.799999"
+       width="50.799999"
+       id="rect3060"
+       style="fill:#9f3f80;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <rect
+       style="display:inline;fill:#f7ea69;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       id="rect3062"
+       width="10.905047"
+       height="1.5145899"
+       x="96.933762"
+       y="218.99861"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <rect
+       style="display:inline;fill:#f7ea69;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       id="rect3064"
+       width="10.905047"
+       height="1.5145899"
+       x="189.4641"
+       y="-76.789719"
+       transform="rotate(90)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <rect
+       style="display:inline;fill:#f7ea69;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       id="rect3066"
+       width="10.905047"
+       height="1.5145899"
+       x="240.96016"
+       y="-76.789719"
+       transform="rotate(90)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <flowRoot
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       transform="matrix(0.26458333,0,0,0.26458333,57.848516,194.62002)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;line-height:1.25;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#767676;fill-opacity:1;stroke:none"
+       id="flowRoot3074"
+       xml:space="preserve"><flowRegion
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowRegion3070"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+           y="268.02542"
+           x="22.897738"
+           height="145.40062"
+           width="119.06822"
+           id="rect3068" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowPara3072">NULL</flowPara></flowRoot>    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="195.29999"
+       x="0.09999752"
+       height="50.799999"
+       width="50.799999"
+       id="rect3056-9"
+       style="display:inline;fill:#f2f2f2;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+    <rect
+       style="fill:#f7ea69;fill-opacity:1;stroke:#f7ea69;stroke-width:1.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       id="rect3058"
+       width="10.905047"
+       height="1.5145899"
+       x="44.83186"
+       y="218.24132"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <flowRoot
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       transform="matrix(0.26458333,0,0,0.26458333,6.9515143,144.20639)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;line-height:1.25;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#767676;fill-opacity:1;stroke:none"
+       id="flowRoot3074-8"
+       xml:space="preserve"><flowRegion
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowRegion3070-1"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+           y="268.02542"
+           x="22.897738"
+           height="145.40062"
+           width="119.06822"
+           id="rect3068-8" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;font-family:Corbel;-inkscape-font-specification:'Corbel, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#767676;fill-opacity:1"
+         id="flowPara3072-6">NULL</flowPara></flowRoot>    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       y="144.49998"
+       x="101.7"
+       height="50.799999"
+       width="50.799999"
+       id="rect3056-9-5"
+       style="display:inline;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+  </g>
 </svg>

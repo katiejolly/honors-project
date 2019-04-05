@@ -1,5 +1,5 @@
 ---
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "`r format(Sys.time(), '%d %B %Y')`"
 title: "Katie Jolly // MSCS Honors 2019"
 output: 
   html_document:
@@ -111,20 +111,28 @@ In total we estimated that we spent about 400 person hours on the project. Some 
 
 <br> <br>
 
-Most of the counties we worked with in Ohio had either a shapefile available or pdf maps that we could digitize. The more challenging case was when no map existed that we could use. Much of the research I did was related to how to use other publicly available data to approximate the precinct boundaries in these counties. There were about ten counties total in this category. In the end we found that geocoded addresses from the [publicly available voter file](https://www6.sos.state.oh.us/ords/f?p=111:1) could draw “accurate-enough” precinct boundaries in the absence of a better option. Groups like the National States Geographic Information Council (NSGIC) are also using voter addresses to geocode precinct boundaries with address range shapefiles. Their method is not publicly available, though. The general approach we settled on was to use the voter file to find the locations of currently registered voters and then triangulate plausible precinct boundaries using a nearest neighbor algorithm. The details of this algorithm are below. To illustrate the algorithm, we use Noble County, Ohio as an example. 
+Most of the counties were cases where they either a shapefile available or pdf maps that we could digitize. The more challenging case was when no map existed that we could use. There were about ten counties in this category. Much of our research was related to how to use other publicly available data to approximate the precinct boundaries in these counties. In the end we found that geocoded addresses from the [publicly available voter file](https://www6.sos.state.oh.us/ords/f?p=111:1) could draw “accurate-enough” precinct boundaries in the absence of a better option. Though groups like the National States Geographic Information Council (NSGIC) are also using voter addresses to geocode precinct boundaries with address range shapefiles, their methods are not publicly available. Our general approach is to use the voter file to find the locations of currently registered voters and then triangulate plausible precinct boundaries using a nearest neighbor algorithm. The details of this algorithm are below. To illustrate the algorithm, we use Noble County, Ohio as an example. 
 
 ### Data
 
 The first consideration is the readily available raw data that is available to researchers and community members. Calling counties for more data is an option, though a time consuming and tedious process. The ultimate goal is to make phone calls less necessary for obtaining data. 
 
-As previously mentioned, the voter files in Ohio (a list of registered voters) are publicly available online. The files are compiled by county, so in total there are 88 voter files in Ohio. Our variables of interest are the address field and the assigned precinct. An example of the voter file for Noble county is shown below:
+The publicly available voter files, a list of the registerested voters, are compiled by county. So in total, there are 88 voter files for Ohio. Included are variables like an address and the assigned precinct. An example of the voter file for Noble county is shown below:
 
 ```{r echo = FALSE}
 kable(noble_geo %>% select(RESIDENTIAL_ADDRESS1, RESIDENTIAL_CITY, RESIDENTIAL_STATE, RESIDENTIAL_ZIP, PRECINCT_NAME) %>% head()) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, font_size = 10)
 ```
 
-The other piece of data we need to approximate the precinct boundaries is an underlying geographic unit for building the precincts. The natural choice is census blocks because in theory precinct boundaries do not split census blocks. Additionally, the method of digitizing we implemented uses census blocks to fill in precinct polygons Census blocks are the smallest geographic unit defined by the Census Bureau. In urban areas, census blocks are often analagous to city blocks, but this analogy does not hold in rural areas. The tigris (**cite!!**) package in R to accesses the census block shapefiles published by the Census Bureau (**cite!!**) for us. 
+The other piece of data we need to approximate the precinct boundaries is an underlying geographic unit for building the precincts. The natural choice is census blocks because in theory precinct boundaries do not split census blocks. Additionally, the method of digitizing we implemented uses census blocks to fill in precinct polygons. Census blocks are the smallest geographic unit defined by the Census Bureau. In urban areas, census blocks are often analagous to city blocks, but this analogy does not hold in rural areas. The tigris package in R (Walker, 2018) to accesses the census block shapefiles published by the Census Bureau for us. Below is an image of how precincts and census blocks fit together. We can see the smaller units, census blocks, fitting into the larger unit, the precinct. 
+
+<br>
+<br> 
+
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\precinct_block.png"/>
+
+<br>
+<br>
 
 To connect the voter file with the census blocks, we make use of a Census Bureau API through the tigris package in R (**cite!!**) that returns a census block ID for each valid address. In general, we find that 60 to 80 percent of the addresses are valid, meaning they can be processed by the API. Below on the left is a map highlighting the census blocks with no valid addresses and on the right is a map showing how many addresses are valid per census block. 
 
@@ -140,13 +148,13 @@ To connect the voter file with the census blocks, we make use of a Census Bureau
 
 ### Defining a model
 
-For the blocks with valid addresses, there is information in the voter file about what precinct that address belongs in. We define the precinct of a block with valid addresses to be the most common precinct of the listed addresses. Often these are unanimous, but in scenarios with data entry errors, split blocks, or other irregularities there may be multiple precincts listed in a block. This leaves slightly fewer than half of the census blocks unclassified in most counties. To fill in the gaps, we wrote an algorithm to impute the values using a nearest neighbor model.
+For the blocks with valid addresses, the voter file contains information about what precinct that address belongs in. We define the precinct of a block with valid addresses to be the most common precinct of the listed addresses. Often these are unanimous, but in scenarios with data entry errors, split blocks (blocks that contains voters in multiple precincts), or other irregularities there may be multiple precincts listed in a block. This leaves slightly fewer than half of the census blocks unclassified in most counties. 
 
-The idea behind our approximation method is to use nonparametric classification to impute the missing block precinct assignments. The initial idea comes from Tobler's first law of geography, "everything is related to everything else, but near things are more related than distant things." In this context, adjacent blocks are more related than non-adjacent blocks in terms of precinct assignment. This is true conceptually, but also many states require precincts to be contiguous polygons. We can formalize this idea with a nearest neighbor model that depends on k neighbors, where k is a function of the particular block. 
+The idea behind our approximation method is to use nonparametric classification to impute the missing block precinct assignments. The initial idea comes from Tobler's first law of geography, "everything is related to everything else, but near things are more related than distant things." In this context, adjacent blocks are more related than non-adjacent blocks in terms of precinct assignment. This is true conceptually, but also many states require precincts to be contiguous polygons. We can formalize this idea with a k nearest neighbor model  where k is a function of the particular block. 
 
-We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$, of $I$ total blocks in a county. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. The difference is that $k$ varies by block $x_i$ in this case, so that parameter is instead $k(x_i)$. Different blocks have different numbers of adjacent neighbors, thus thus the neighborhood size is a function of the block. $N(x_i)$, the neighborhood of block $x_i$ is defined by a rook-contiguity structure. This means that a block is considered a neighbor if it shares more than one point (more than just a corner adjacency). Alternatively, it is also common to define a queen-contiguity structure, allowing for corner adjacencies. 
+We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$, of $I$ total blocks in a county. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. Different blocks have different numbers of adjacent neighbors, thus thus the neighborhood size is a function of the block. $N(x_i)$, the neighborhood of block $x_i$ is defined by a rook-contiguity structure. This means that a block is considered a neighbor if it shares more than one point (more than just a corner adjacency). Alternatively, it is also common to define a queen-contiguity structure, allowing for corner adjacencies. In this model $k(x_i)$ is defined as the size of the neighborhood $N(x_i)$ of a given block $x_i$. 
 
-From our set of $L$ possible precincts, the predicted precinct $\hat{p}_{k(x_i)}$ of a block $x_i$ is the most common precinct in its neighborhood of size $k(x_i)$, where $y_{ij}$ is the precinct assignment of the $jth$ neighbor of the $ith$ block. The number of neighboring blocks in precinct $p_l$ is defined by $N_l(x_i)$. Ties for the most common precinct are broken at random.
+From our set of $L$ possible precincts, the predicted precinct $\hat{p}_{k(x_i)}$ of a block $x_i$ is the most common precinct in its neighborhood of size $k(x_i)$, where $y_{ij}$ is the precinct assignment of the $jth$ neighbor of the $ith$ block. The number of neighboring blocks in precinct $p_l$ is defined by $N_l(x_i)$. Ties for the most common precinct are broken at random. Specifically:
 
 
 
@@ -156,7 +164,7 @@ $$\text{where } N_l(x_i):= \sum_{j=1}^{k(x_i)}\mathbf{1}(y_{ij}=p_l)$$
 
 After we run this model, there will still be unclassified blocks. This comes from the fact that not every unclassified block has classified neighbors. This then becomes an iterative model. The process is repeated until every block is classified. Blocks classified in previous iterations become part of the training set, so each iteration has more training data than previous ones. 
 
-If we wanted a nondeterministic model instead of this deterministic one, we could define the probability of block $x_i$ being in precinct $p_l$ as the fraction of its neighbors in that precinct. This model, as written, is deterministic because it gives only one precinct name for each block. The one precinct name is the most likely precinct name. To make it nondeterministic, instead of only looking for the most likely precinct name, we could involve more decision-making on the part of the user by giving the probability of each precinct name for a given block and allow the user to choose from that list of probabilities. The probability of a precinct name for a given block could be defined as the percent of its neighbors that are in that precinct. Doing the classification in a nondeterministic way would give more leverage to the user to make judgement calls based on outside information sources that are often correlated with precinct boundaries, like the location of major roads or minicipal boundaries. Along with allowing the integration of outside information provided by the user, there are other changes we can make to our algorithm that allow for more flexibility. As an improvement to the original model definition, we can include a requirement that a minimum fraction of a block's neighborhood, $\alpha$ must be classified in order to make a classification decision. This condition is supplied by the user. In this case, our model becomes:
+If we wanted a nondeterministic model instead of this deterministic one, we could define the probability of block $x_i$ being in precinct $p_l$ as the fraction of its neighbors in that precinct. This model, as written, is deterministic because it gives only one precinct name for each block. The one precinct name is the most likely precinct name. To make it nondeterministic, instead of only looking for the most likely precinct name, we could involve more decision-making on the part of the user by giving the probability of each precinct name for a given block and allow the user to choose from that list of probabilities. The probability of a precinct name for a given block could be defined as the percent of its neighbors that are in that precinct. Doing the classification in a nondeterministic way would give more leverage to the user to make judgement calls based on outside information sources that are often correlated with precinct boundaries, like the location of major roads or municipal boundaries. Along with allowing the integration of outside information provided by the user, there are other changes we can make to our algorithm that allow for more flexibility. As an improvement to the original model definition, we can include a requirement that a minimum fraction of a block's neighborhood, $\alpha$ must be classified in order to make a classification decision. This condition is supplied by the user. In this case, our model becomes:
 
 
 $$
@@ -175,7 +183,7 @@ Once each block has a predicted precinct classification, we have the necessary i
 
 ### A simplified example
 
-In this section I will walk through how this algorithm works for one particular block. This example will focus on the center block of this area. For simplicity's sake, we will assume that this area has only two possible precincts: blue or purple.
+In this section I will walk through how this algorithm works for one particular block. We can image a region with nine census blocks. To walk through the process we will classify the center block of this area. For simplicity's sake, we will assume that this area has only two possible precincts: blue or purple.
 
 <br>
 <br>
@@ -215,19 +223,7 @@ We now have the necessary information to classify the center block (our block of
 <br>
 <br>
 
-We then count the number of blocks in the neighborhood of a given precinct. 
-
-<br>
-<br>
-
-| Blue precinct | Purple precinct | NULL |
-|---------------|-----------------|---------|
-| 2 blocks | 1 block | 1 block |
-
-<br>
-<br>
-
-When we find the most common precinct, we disregard the NULL blocks. In this case, the most common precinct is **blue**. We have not set any restriction on the minimum proportion of blocks in the neighborhood that have to be classified, so we do not have to check that value. Below you will see a diagram with this classification made for the center block. 
+We then count the number of blocks in the neighborhood of a given precinct. There are $2$ in the blue precinct and $1$ in the purple precinct. When we find the most common precinct, we disregard the NULL blocks. In this case, the most common precinct is **blue**. We have not set any restriction on the minimum proportion of blocks in the neighborhood that have to be classified, so we do not have to check that value. Below you will see a diagram with this classification made for the center block. 
 
 <br>
 <br>
@@ -246,9 +242,9 @@ In practice, we do not focus only on one block at a time. Rather, we look at any
 
 #### Conducting a sensitivity analysis
 
-One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We first tested $\alpha \in \{0, 0.25, 0.35, 0.4, 0.5, 0.8\}$ to see how the maps would change with different minimum proportions set for classification. We expected that a value somewhere in the middle of the set would be best. 
+One question that we had was how robust the algorithm was to changes to the minimum required neighbors. We tested the algorithm $\alpha \in \{0, 0.25, 0.35, 0.4, 0.5, 0.8\}$ to see how the maps might change with different minimum proportions set for classification. We expected that a value somewhere in the middle of the set would be best. 
 
-In general we found that $\alpha > 0.25$ was too strict in this particular county (Noble). There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). However, in other counties the "maximum minimum" proportion could be different. The best method is to try a variety in each context. Below is a plot illustrating this phenomemon. Each line on the plot follows the path of the classification at different values of $\alpha$ and it is measuring the number of census blocks in the county that are still unclassified after that iteration, Iteration number can be found on the x axis. For example, the yellow line illustrates what happens when we set the minimum proportion to 0.8, or 80 percent of a block's neighborhood has to be classified in order to classify it. In particular, notice that after a sharp initial drop (though less sharp than the other lines), it plateaus at about 800 blocks still classified after the first iteration. Meanwhile, the gray line that shows what happens when we make no requirements for a block's neighborhood prior to classification. We see a very sharp drop after the first iteration and it continues to drop until all of the block's are classified after the sixth iteration. The lines in the middle are intermediate minimum values between our two extremes. In this particular example, notice that only the green and gray lines reach $y=0$, or converge to a completed approximation. It's hard to see in this particular view, but all of the other lines reach horizontal asymptotes where they cannot continue classifying any further. Future research could investigate the impact of using a stricter $\alpha$ value until reach an asymptote and then loosening the requirements to allow it to proceed.
+In general we found that $\alpha > 0.25$ was too strict in this particular county (Noble). There would be a point at which there were no unclassified blocks that met the requirements and the percent classified would reach a horizontal asymptote (see figure below). However, in other counties the "maximum minimum" proportion could be different. The best method is to try a variety in each context. Below is a plot illustrating this phenomemon. Each line on the plot follows the path of the classification at different values of $\alpha$ and it measures the number of census blocks in the county that are still unclassified after that iteration, Iteration number can be found on the x axis. For example, the yellow line illustrates what happens when we set the minimum proportion to 0.8, or 80 percent of a block's neighborhood has to be classified in order to classify it. In particular, notice that after a sharp initial drop (though less sharp than the other lines), it plateaus at about 800 blocks still unclassified after the first iteration. Meanwhile, the gray line shows what happens when we make no requirements for a block's neighborhood prior to classification. We see a very sharp drop after the first iteration and it continues to drop until all of the blocks are classified after the sixth iteration. The lines in the middle are intermediate minimum values between our two extremes. In this particular example, notice that only the green and gray lines reach $y=0$, or converge to a completed approximation. It's hard to see in this particular view, but all of the other lines reach horizontal asymptotes where they cannot continue classifying any further. Future research could investigate the impact of using a stricter $\alpha$ value until reach an asymptote and then loosening the requirements to allow it to proceed.
 
 <br>
 <br>
@@ -260,7 +256,7 @@ In general we found that $\alpha > 0.25$ was too strict in this particular count
 <br>
 <br>
 
-We can also look at this process in detail for certain minimum proportions. Below are some maps that help detail this process. This set of maps corresponds to the convergence process when $\alpha = 0$. These maps show a view of what is actually happening at each point on the line plot above for one particular line. For example, between the initial map and the first iteration we see the sharp decrease in the number of unclassified blocks that we saw on the plot above as well. To see the maps for the other values plotted on the above graph, please see the **Appendix: Figures** section at the bottom of this page.  
+We can also look at this process in detail for certain minimum proportions. Below are some maps that help detail this process. This set of maps corresponds to the convergence process when $\alpha = 0$. These maps show a view of what is actually happening at each point on the line plot above for one particular line. For example, between the initial map and the first iteration we see the sharp decrease in the number of unclassified blocks that we saw on the plot above. To see the maps for the other values plotted on the above graph, please see the **Appendix: Figures** section at the bottom of this page.  
 
 
 
