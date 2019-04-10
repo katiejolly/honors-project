@@ -91,6 +91,13 @@ During the second workshop we started vectorizing the georeferenced maps. This w
 
 In total we estimated that we spent about 400 person hours on the project. Some of that time comes from the fact that many people had never used GIS before and we had to redo a few counties. In general, it’s a long and tedious process. As of now, by hand seems to be the only viable option. However, in the next section I will discuss an algorithm that was originally designed to impute missing data but the hope is that we could automate some of the digitizing in the future as well. 
 
+<br> 
+<br>
+
+### Map examples
+
+<br>
+<br>
 
 
 
@@ -321,17 +328,36 @@ Even though $V_\beta$ only gives a global measure of association, implied in the
 
 To demostrate how we use v-measure, I will use Clark County as an example. For this county, we were given official precincts by the county. We also generated our own approximations using our model. 
 
-**insert side-by-side maps here!!** 
+<br>
+<br>
 
-Counties like Clark help validate our method, by telling us how closely our approximations match the actual map. It is not necessarily a definitive measure, but it can be used to give a general idea of model adequacy. 
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\clark_approx_precincts.png"/>
+<img width="45%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\clark_base_precincts.png"/>
 
-Intitially we implemented a precinct approximation model defined by $\alpha = 0$, meaning only one neighbor has to be classified to classify a block. When we calculated v-measure, we got an overall score of $0.97$. **check overall and completeness/homogeneity values**. V-measure also calculates local inhomogeneity, which gives an idea of exactly which $a_{zy}$ units are the most inhomogeneous, or poorly approximated according to this measure. 
+<br>
+<br>
 
-**insert local inhomogeneity map here!!**
+Counties like Clark help validate our method by telling us how closely our approximations match the actual map. It is not necessarily a definitive measure, but it can be used to give a general idea of model adequacy. 
 
-When we look at this map, we see a few spatial patterns. First, we see a line of inhomogeneity through the middle of the county. From outside research we know that this line tracks with a major highway. 
+Intitially we implemented a precinct approximation model defined by $\alpha = 0$, meaning only one neighbor has to be classified to classify a block. When we calculated v-measure, we got an overall score of $0.97$. **check overall and completeness/homogeneity values**. V-measure also calculates local inhomogeneity, which gives an idea of exactly which $a_{zy}$ units are the most inhomogeneous, or poorly approximated according to this measure. First, we can look at local inhomogeneity from the perspective of the official precinct boundaries.
 
-**insert map with arrow?**
+<br>
+<br>
+<img width="65%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\clark_rih_base.png"/>
+<img width="25%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\clark_rih_base_dist.png"/>
+<br>
+<br>
+
+Similarly, we can visualize the distribution from the perspective of the approximated map. 
+
+<br>
+<br>
+<img width="65%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\clark_rih_approx.png"/>
+<img width="25%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\clark_rih_approx_dist.png"/>
+<br>
+<br>
+
+When we look at these maps, we see a few spatial patterns. First, we see a line of inhomogeneity through the middle of the county. From outside research we know that this line tracks with a major highway. 
 
 The spatial autocorrelation of our errors suggests latent patterns that our model cannot account for. Being able to identify covariates, such as the presence of the highway, adds to the information we have about what those latent variables might be. In this case, we know from prior knowledge that precinct boundaries often follow major roads or municipal boundaries. Through the census we can access this data. In future versions of the algorithm, we hope to include mechanisms for accounting for updating the probability that blocks are in the same precinct according to this outside information about other spatial patterns. 
 
