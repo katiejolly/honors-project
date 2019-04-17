@@ -160,7 +160,7 @@ In total we estimated that we spent about 400 person hours on the project. Some 
 
 <br> <br>
 
-Most of the counties were cases where they either a shapefile available or pdf maps that we could digitize. The more challenging case was when no map existed that we could use. There were about ten counties in this category. Much of our research was related to how to use other publicly available data to approximate the precinct boundaries in these counties. In the end we found that geocoded addresses from the [publicly available voter file](https://www6.sos.state.oh.us/ords/f?p=111:1) could draw “accurate-enough” precinct boundaries in the absence of a better option. Though groups like the National States Geographic Information Council (NSGIC) are also using voter addresses to geocode precinct boundaries with address range shapefiles, their methods are not publicly available. Our general approach is to use the voter file to find the locations of currently registered voters and then triangulate plausible precinct boundaries using a nearest neighbor algorithm. The details of this algorithm are below. To illustrate the algorithm, we use Noble County, Ohio as an example. 
+Once we collected all of the available data, we found that there were still some gaps. However, in order to evaluate voting patterns we want a full view of the precincts in Ohio. Most of the counties had either a shapefile available or pdf maps that we could digitize. The more challenging case was when no map existed that we could use. There were about ten counties in this category. Much of our research was related to how to use other publicly available data to approximate the precinct boundaries in these counties. In the end we found that geocoded addresses from the [publicly available voter file](https://www6.sos.state.oh.us/ords/f?p=111:1) could draw “accurate-enough” precinct boundaries in the absence of a better option. Though groups like the National States Geographic Information Council (NSGIC) are also using voter addresses to geocode precinct boundaries with address range shapefiles, their methods are not publicly available. Our general approach is to use the voter file to find the locations of currently registered voters and then triangulate plausible precinct boundaries using a nearest neighbor algorithm. The details of this algorithm are below. To illustrate the algorithm, we use Noble County, Ohio as an example. 
 
 ### Data
 
@@ -201,7 +201,7 @@ For the blocks with valid addresses, the voter file contains information about w
 
 The idea behind our approximation method is to use nonparametric classification to impute the missing block precinct assignments. The initial idea comes from Tobler's first law of geography, "everything is related to everything else, but near things are more related than distant things." In this context, adjacent blocks are more related than non-adjacent blocks in terms of precinct assignment. This is true conceptually, but also many states require precincts to be contiguous polygons. We can formalize this idea with a k nearest neighbor model  where k is a function of the particular block. 
 
-We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$, of $I$ total blocks in a county. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. Different blocks have different numbers of adjacent neighbors, thus thus the neighborhood size is a function of the block. $N(x_i)$, the neighborhood of block $x_i$ is defined by a rook-contiguity structure. This means that a block is considered a neighbor if it shares more than one point (more than just a corner adjacency). Alternatively, it is also common to define a queen-contiguity structure, allowing for corner adjacencies. In this model $k(x_i)$ is defined as the size of the neighborhood $N(x_i)$ of a given block $x_i$. 
+We define this model as a nearest neighbor model that depends on the number of adjacent neighbors of a given block $x_i$, of $I$ total blocks in a county. The general framework is similar to a $knn$ model, where $k$ = the size of the neighborhood. Different blocks have different numbers of adjacent neighbors, thus the neighborhood size is a function of the block. $N(x_i)$, the neighborhood of block $x_i$ is defined by a rook-contiguity structure. This means that a block is considered a neighbor if it shares more than one point (more than just a corner adjacency). Alternatively, it is also common to define a queen-contiguity structure, allowing for corner adjacencies. In this model $k(x_i)$ is defined as the size of the neighborhood $N(x_i)$ of a given block $x_i$. 
 
 From our set of $L$ possible precincts, the predicted precinct $\hat{p}_{k(x_i)}$ of a block $x_i$ is the most common precinct in its neighborhood of size $k(x_i)$, where $y_{ij}$ is the precinct assignment of the $jth$ neighbor of the $ith$ block. The number of neighboring blocks in precinct $p_l$ is defined by $N_l(x_i)$. Ties for the most common precinct are broken at random. Specifically:
 
@@ -338,7 +338,7 @@ In order to have "true" values to which to compare our approximations, we indepe
 
 We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | y = 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
 
-Inhomogeneity of the partion with respect to the regionalization can be written out generally as: $$\sum_{y=1}^m(\frac{A_y}{A})\frac{\text{variance of regions in zone y}}{\text{variance of regions in the domain}}$$
+Inhomogeneity of the partion with respect to the regionalization can be written out generally as: $$\sum_{y=1}^m\bigg(\frac{A_y}{A}\bigg)\frac{\text{variance of regions in zone y}}{\text{variance of regions in the domain}}$$
 
 This is essentially a weighted sum of the ratios of variances, or how inhomogenous a zone is in terms of the regions compared to the whole domain. We can measure the variance of the regions in zone $y$ in terms of the Shannon entropy $S$. 
 
@@ -350,7 +350,7 @@ $$S^R = -\sum_{z = 1}^n\frac{A_z}{A}\text{log}\frac{A_z}{A}$$
 
 We can calculate the inhomogeneity of partition with respect to regionalization across the domain as an area-weighted average of the $\frac{S_z^R}{S_R}$ ratios. These values can range from 0 in the perfectly homogenous case where every zone is nested in only one region to 1 where a zone is spread across all regions of the domain. Inhomogeneity can be difficult to conceptualize, though, so we find homogeneity $h$ instead.
 
-$$h = 1 - \sum_{y=1}^m(\frac{A_y}{A})\frac{S^R_y}{S^R}$$
+$$h = 1 - \sum_{y=1}^m\bigg(\frac{A_y}{A}\bigg)\frac{S^R_y}{S^R}$$
 
 Homogeneity is only one view of spatial agreement between the two maps. You can think of an extreme case where there is only one region that covers all of the zones. There will be perfect homogeneity (each zone is contained by only one region), but there is no reason to say the maps are spatially associated. If we think of association from the perspective of that one region, it is broken up across all zones and thus would give a 0 for homogeneity. 
 
@@ -360,11 +360,22 @@ $$S^W_z = -\sum_{y =1}^m\frac{a_{zy}}{A_z}\text{log}\frac{a_{zy}}{A_z}$$
 
 $$S^W = -\sum_{y = 1}^m\frac{A_y}{A}\log\frac{A_y}{A}$$
 
-$$c = 1 - \sum_{z=1}^n(\frac{A_z}{A})\frac{S^W_z}{S^W}$$
+$$c = 1 - \sum_{z=1}^n\bigg(\frac{A_z}{A}\bigg)\frac{S^W_z}{S^W}$$
 
 Possible values of completeness follow an analagous pattern to those for homogeneity. We then compute the harmonic mean of homogeneity and completeness with an optional weighting parameter $\beta$ that can give more or less weight to either value. There are feasibly scenarios in which homogeneity or completeness may be more important, but in this context we weight them equally, setting $\beta = 1$. When $\beta > 1$ for example, completeness is given more weight than homogeneity. The opposite is true when $\beta < 1$.  V-measure $V_\beta$ can range from 0 to 1, same as homogeneity and completeness individually. When $V_\beta$ = 0, that indicates no spatial association, or agreement, between the two maps. Alternatively, when $V_\beta = 1$, we say there is perfect spatial agreement between the two maps. 
 
 $$V_\beta = \frac{(1 + \beta)hc}{(\beta h) + c}$$
+
+Below is an example taken from [Spatial association between regionalizations using theinformation-theoreticalV-measure by Nowosad and Stepinski](https://eartharxiv.org/rcjh7/) to illustrate how v-measure is calculated in practice. 
+
+<br>
+<br>
+
+<img width="75%" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\vmeasure.PNG"/>
+
+<br>
+<br>
+
 
 Even though $V_\beta$ only gives a global measure of association, implied in these equations are the local measures of association as well. We can map the ratios $\frac{S^W_z}{S^W}$ and $\frac{S^R_y}{S^R}$ to see local association from both perspectives. To further check the robustness of our algorithm to different minimum proportion values, we can calculate V-measure for maps produced at different thresholds for the same county and compare the degree of spatial association. Even though we are not ultimately looking to approximate the counties for which we already have data, and thus can calculate V-measure, this process helps us learn more about how the algorithm is working in the general case. Additionally, we can compare different approximations to each other to find where local inhomogeneity is highest, or where we see the biggest changes due to threshold specification. 
 
@@ -414,12 +425,18 @@ After the release of our upcoming R package `{approxprecincts}`, anyone will be 
 
 This example is for Noble County, but the process is similar for any Ohio county.
 
-We start by initially just creating the first iteration.
+We start by initially just running the algorithm once to classify all of the blocks with enough neighbors at the start.
 
 ```{r eval = FALSE, include = TRUE, echo = TRUE}
+# load the voterfile data (csv)
+
 county_voterfile <- load_voterfile(county = "Noble")
 
+# load the census block shapefile for a particular county
+
 county_blocks <- load_blocks(county = "Noble")
+
+# geocode the voterfile addresses with a census api to get the census block ID for each address
 
 voterfile_geo <- geocode_voterfile(county_voterfile)
 
@@ -535,6 +552,10 @@ This group is certainly not the only one working on voting rights and data scien
 * [Drawing the line: How redistricting turned America from blue to red](https://www.newyorker.com/magazine/2016/06/27/ratfcked-the-influence-of-redistricting)
 
 * [Automated georeferencing of historic aerial photography by J.S. Kim, C. C. Miller, and J. Bethel](https://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1066&context=jto)
+
+<br>
+<br>
+<br>
 
 ## Code
 
