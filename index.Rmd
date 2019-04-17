@@ -520,20 +520,28 @@ With the 2020 census and election approaching, there has been an [increased inte
 <br>
 <br>
 
-This group is certainly not the only one working on voting rights and data science for social good. Here is a starting list of other organizations and resources to know about if you're interested in this work!
+This group is certainly not the only one working on voting rights and data science for social good. Here is a starting list of other organizations and resources to know about if you're interested in this work! I've also included some articles that were particularly informative for me. 
 
 * [Changing the math on gerrymandering by Olivia Walch](https://thenib.com/changing-the-math-on-gerrymandering)
 
 * [Metric Geometry and Gerrymandering Group](https://mggg.org/)
 
-...
+* [An open letter to the open data community by the Civic Analytics Network](https://datasmart.ash.harvard.edu/news/article/an-open-letter-to-the-open-data-community-988)
+
+* [Categorical spatial interpolation with R by Timo Grossenbacher](https://timogrossenbacher.ch/2018/03/categorical-spatial-interpolation-with-r/)
+
+* [Understanding Census Bureau address ranges](https://www.census.gov/newsroom/blogs/research-matters/2016/04/understanding-census-bureau-address-ranges.html)
+
+* [Drawing the line: How redistricting turned America from blue to red](https://www.newyorker.com/magazine/2016/06/27/ratfcked-the-influence-of-redistricting)
+
+* [Automated georeferencing of historic aerial photography by J.S. Kim, C. C. Miller, and J. Bethel](https://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1066&context=jto)
 
 ## Code
 
 
 **Code to reproduce the Noble County shapefile**
 
-You can adapt this code to any other Ohio county by starting with a different voterfile link. 
+You can adapt this code to any other Ohio county by starting with a different [voterfile link](https://www6.sos.state.oh.us/ords/f?p=111:1). 
 
 This code is written in R using the tidyverse ([tidyr](https://tidyr.tidyverse.org/), [dplyr](https://github.com/tidyverse/dplyr), [ggplot2](https://ggplot2.tidyverse.org/)), [tigris](https://github.com/walkerke/tigris), and [sf](https://github.com/r-spatial/sf) packages.
 
@@ -552,30 +560,32 @@ noble$GEOID10 <- NA # initialize an empty column
 
 # the call geolocator function takes the address, city, and state as individual columns and sends them as a request to the census bureau API
 
-vec <- purrr::map_chr(1:nrow(noble), function(i) tigris::call_geolocator(noble[['RESIDENTIAL_ADDRESS1']][i],
-                                                                         noble[['RESIDENTIAL_CITY']][i],
-                                                                         noble[['RESIDENTIAL_STATE']][i]))
+vec <- purrr::map_chr(1:nrow(noble), function(i) tigris::call_geolocator(
+    noble[["RESIDENTIAL_ADDRESS1"]][i],
+    noble[["RESIDENTIAL_CITY"]][i],
+    noble[["RESIDENTIAL_STATE"]][i]
+  ))
 ```
 
 ```{r eval = FALSE, include=TRUE, echo=TRUE}
 
 # helper functions
 
-st_rook = function(a, b = a) sf::st_relate(a, b, pattern = "F***1****") # find rook-contiguity neighbors
+st_rook <- function(a, b = a) sf::st_relate(a, b, pattern = "F***1****") # find rook-contiguity neighbors
 
-lookup_precinct <- function(index, precinct_name_var = "PRECINCT_NAME"){ # for a given row index, find the precinct name
+lookup_precinct <- function(index, precinct_name_var = "PRECINCT_NAME") { # for a given row index, find the precinct name
   precinct <- precincts_nb[index, precinct_name_var]
   return(precinct)
 }
 
-create_precinct_vector <- function(){ # create a vector of precinct names from lookup_precinct
+create_precinct_vector <- function() { # create a vector of precinct names from lookup_precinct
   prec <- purrr::map(precincts_nb$NB_ROOK, lookup_precinct)
   prec_vec <- purrr::map(prec, dplyr::pull)
   return(prec_vec)
 }
 
 
-clean_precincts_fun <- function(i){ # clean the precincts, take out NA values
+clean_precincts_fun <- function(i) { # clean the precincts, take out NA values
   y <- precincts_nb_sub$precinct_nn[[i]]
   print(y)
   new_y <- y[!is.na(y)]
@@ -585,30 +595,29 @@ clean_precincts_fun <- function(i){ # clean the precincts, take out NA values
 
 # Use this function to assign 2010 census blocks to a particular precinct based on the most common precinct assignment of the voters geotagged there.
 
-join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GEOID", precinct_name = "PRECINCT_NAME"){
-  colnames(voters)[colnames(voters)==block_geoid_voters] <- 'BLOCK_GEOID'
-  colnames(voters)[colnames(voters)==precinct_name] <- 'PRECINCT_NAME'
+join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GEOID", precinct_name = "PRECINCT_NAME") {
+  colnames(voters)[colnames(voters) == block_geoid_voters] <- "BLOCK_GEOID"
+  colnames(voters)[colnames(voters) == precinct_name] <- "PRECINCT_NAME"
   precincts <- voters %>%
-  #   # mutate(BLOCK_GEOID = as.character(!! block_geoid_q)) %>%
-  #   # rename(PRECINCT_NAME = (!! precinct_name_q)) %>%
+    #   # mutate(BLOCK_GEOID = as.character(!! block_geoid_q)) %>%
+    #   # rename(PRECINCT_NAME = (!! precinct_name_q)) %>%
     group_by(BLOCK_GEOID, PRECINCT_NAME) %>% # for each block, precinct combination
-    summarise(c=n()) %>% # counts the number of times a precinct is counted for a particular block
-    filter(row_number(desc(c))==1) # dataframe of precincts from voterfile, takes the most common precinct assignment for a block
-  
+    summarise(c = n()) %>% # counts the number of times a precinct is counted for a particular block
+    filter(row_number(desc(c)) == 1) # dataframe of precincts from voterfile, takes the most common precinct assignment for a block
+
   precincts_geo <- blocks %>%
     # mutate(GEOID10 = (GEOID10)) %>%
     left_join(precincts, by = c("GEOID10" = "BLOCK_GEOID")) %>% # combine precincts with block shapefile
     mutate(dimension = st_dimension(.)) %>%
     filter(!(is.na(dimension))) # take out empty polygons
-  
+
   return(precincts_geo)
-  
 }
 
 # Assign a neighborhood to each block
 
-find_neighbors <- function(x, type = "rook"){
-  if (type == "rook"){
+find_neighbors <- function(x, type = "rook") {
+  if (type == "rook") {
     NB <- st_rook(x)
   } else if (type == "queen") {
     NB <- st_queen(x)
@@ -616,90 +625,92 @@ find_neighbors <- function(x, type = "rook"){
     stop("Please enter 'rook' or 'queen' for neighbor type")
   }
   x$NB <- NA
-  for (i in 1:length(NB)){
+  for (i in 1:length(NB)) {
     x$NB[i] <- NB[i]
     x$NB_length[i] <- length(x$NB[[i]])
   }
-  
-  
+
+
   return(x)
 }
 
 # Lookup the precinct names of each block in a neighborhood.
 
 
-lookup_precincts_nn <- function(x){
+lookup_precincts_nn <- function(x) {
   precinct_nn <- list()
-  
+
   for (i in 1:nrow(x)) {
     precincts <- c()
-    
-    for (y in x$NB[[i]]){
-      precincts <- c(precincts, x[[y, 'PRECINCT_NAME']])
+
+    for (y in x$NB[[i]]) {
+      precincts <- c(precincts, x[[y, "PRECINCT_NAME"]])
     }
-    
+
     precinct_nn[[i]] <- precincts
-    
   }
-  
+
   x$precinct_nn <- precinct_nn
-  
-  for (i in 1:nrow(x)){
-    x$na_length[i] = sum(is.na(x$precinct_nn[[i]])) # count the number of NAs
+
+  for (i in 1:nrow(x)) {
+    x$na_length[i] <- sum(is.na(x$precinct_nn[[i]])) # count the number of NAs
   }
-  
-  x$percent_nn_preclassified <- 1 - ( x$na_length / x$NB_length)
-  
-  
+
+  x$percent_nn_preclassified <- 1 - (x$na_length / x$NB_length)
+
+
   return(x)
-  
 }
 
 # Classify any unassigned block with the most common precinct name of the rook-neighborhood.
 
-classify_nn <- function(x, alpha = 0){
-  
+classify_nn <- function(x, alpha = 0) {
   x <- x %>%
     mutate(less_than_alpha = percent_nn_preclassified < alpha) # percent of neighbors is less than the required number
-  
+
   precincts_nb_sub <- x %>%
-    filter(!is.na(precinct_nn),
-           !identical(precinct_nn, character(0)),
-           less_than_alpha == FALSE) # take out blocks with not enough classified neighbors
-  
-  clean_precincts_fun <- function(i){
+    filter(
+      !is.na(precinct_nn),
+      !identical(precinct_nn, character(0)),
+      less_than_alpha == FALSE
+    ) # take out blocks with not enough classified neighbors
+
+  clean_precincts_fun <- function(i) {
     y <- precincts_nb_sub$precinct_nn[[i]]
     new_y <- y[!is.na(y)]
     return(new_y)
   }
 
   p_new <- map(1:nrow(precincts_nb_sub), clean_precincts_fun)
-  
+
   p_lengths <- map(1:length(p_new), function(x) length(p_new[[x]]))
-  
-  
-  
+
+
+
   precincts_nb_sub <- precincts_nb_sub %>%
-    mutate(precinct_nn_clean = p_new,
-           precinct_nn_length = p_lengths) %>% # finds the number of classified neighbors
-    filter(precinct_nn_length > 0)# take out the blocks without meaningful neighbors
-  
+    mutate(
+      precinct_nn_clean = p_new,
+      precinct_nn_length = p_lengths
+    ) %>% # finds the number of classified neighbors
+    filter(precinct_nn_length > 0) # take out the blocks without meaningful neighbors
 
 
-  for (i in 1:nrow(precincts_nb_sub)){
-    precincts_nb_sub$PRECINCT_NAME[i] <- ifelse(is.na(precincts_nb_sub$PRECINCT_NAME[i]), 
-                                                names(which.max(table(precincts_nb_sub$precinct_nn[[i]]))), 
-                                                precincts_nb_sub$PRECINCT_NAME[i])
+
+  for (i in 1:nrow(precincts_nb_sub)) {
+    precincts_nb_sub$PRECINCT_NAME[i] <- ifelse(is.na(precincts_nb_sub$PRECINCT_NAME[i]),
+      names(which.max(table(precincts_nb_sub$precinct_nn[[i]]))),
+      precincts_nb_sub$PRECINCT_NAME[i]
+    )
   } # assign a precinct as the max of the vector of precincts
-  
+
   precincts_nb_full <- x %>%
     left_join(precincts_nb_sub %>% st_set_geometry(NULL) %>% select(GEOID10, PRECINCT_NAME), by = "GEOID10") %>%
     mutate(PRECINCT_NAME.x = if_else(is.na(PRECINCT_NAME.x), PRECINCT_NAME.y, PRECINCT_NAME.x)) %>%
     select(-PRECINCT_NAME.y) %>%
     rename(PRECINCT_NAME = PRECINCT_NAME.x)
-  
+
   message(paste0("There are ", sum(is.na(precincts_nb_full$PRECINCT_NAME)), " unclassified blocks."))
-  
+
   return(precincts_nb_full)
 }
 
