@@ -18,35 +18,67 @@ opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 2, fi
 
 # Creating an open-source precinct shapefile for Ohio {.tabset}
 
+<br>
+<br>
 
-This site is a culmination and explanation of the work that went into this project. On the first page you will find a brief overview of the different parts of the project. On subsequent pages, each part will be explained in more detail with images and examples.
+**Abstract**
+
+<br>
+<br>
+
+Many people claim that political districts are gerrymandered, but how do we provide quantitative evidence? Modern gerrymandering research has employed computational methods to evaluate the fairness of political districting. In order to use these methods, we first need to collect detailed data on precinct boundaries. This process is not always straightforward. Not all states and counties provide “shapefiles” or even static maps that can be digitized (labor intensive work). My work aims to make the data gathering process more accessible for researchers and community members. 
+
+With a team, I built an algorithm that approximates voting precinct boundaries from census blocks and the publicly available list of registered voters.  In short, this algorithm aggregates the census blocks assigned to the same precinct and applies a k-nearest neighbor model to determine the most likely precinct assignment.  I test this approximation against counties for which we have official shapefiles and  find that our approximation generally has greater than 90% spatial agreement with the official shapefiles. In conclusion, I present ideas for improving this model by utilizing other spatial features such as municipality boundaries and locations of major roads.
+
+<br>
+<br>
+
+
 
 ## Overview
 
 <br>
 <br>
 
+On this site you'll find an explanation of the work that went into creating the first open-source precinct shapefile for Ohio. This project should be thought of as a work-in-progress, in part because precinct boundaries are constantly changing. That being said, if you come across errors in this site, please let [Katie](katiejolly6@gmail.com) know. 
+
+This project has been a group effort by myself (Katie), Ruth Buck, Katya Kelly, Hannah Wheelen, and many other undergraduate and graduate fellows at the Voting Rights Data Institute from June to July 2018. 
+
+<br>
+**Site outline**
+ <br> 
+ 
+* Motivation for the project: An outline of the current status of voting rights in America
+
+* Collecting publicly available data: The process we used to collect shapefiles and maps for each county in Ohio
+
+* Approximating precinct maps: An algorithm we developed to fill in the gaps in our data using voterfile and census block data
+
+* What can we do with this: Some ideas we have had about why someone might want precinct boundary data
+
+* More resources: Resources that have been helpful to us along the way
+
+<br>
+<br>
+
 <img width="100%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ohio-counties.png"/>
+
+<br>
+<br>
 
 
 ## Motivation <br>for the project
 
-<img width="100%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ohio-trial.PNG"/>
-
-
-
-### Current status of voting rights in America
-
-
+<img width="130%" align="middle" src="C:\\Users\\katie\\Documents\\honors\\paper\\images\\ohio-trial.PNG"/>
 
 
 ### Why are precincts important for voting rights?
 
-Precincts are the smallest unit at which election data are reported. Counties can also provide a coarse picture of election returns, but precincts give significantly more detail to the story.	In order to make nuanced arguments about the fairness of districts, we need to know about the precinct boundaries (Geo-Enabled Elections, 2018).  
+Precincts are the smallest unit at which election data are reported. Counties can also provide a coarse picture of election returns, but precincts give significantly more detail to the story.	In order to make nuanced arguments about the fairness of districts, we need to know about the [precinct boundaries](https://elections.nsgic.org/gis-places-voters-in-right-voting-district/).  
 
 In the United States, precinct boundaries are left up to the county to decide. On the surface that is not a bad thing, but a problem arises when there is no central database for that information. Often the information isn’t digitized in an easily shareable way. In my ideal world there would be a centralized repository of shapefiles that is required to be updated whenever there is a boundary change. However, we are pretty far from that in terms of data capacity, and I realize that’s a larger problem than just precinct boundaries. 
 
-Recently in the news, with the election and decennial census approaching in 2020, there has been a resurgent interest in polling place accessibility, voter registration campaigns, and (sometimes hidden) voter disenfranchisement. For example, there’s an ACLU lawsuit in Georgia now over closing polling places in predominantly African-American areas.The Supreme Court also recently upheld Ohio’s practice of purging inactive voters from the voter rolls (Liptak, 2018). Many of the most pressing voting rights challenges require precise knowledge of where polling places are and who is using those polling places, as well as which voters are affected by new policies.
+Recently in the news, with the election and decennial census approaching in 2020, there has been a resurgent interest in [polling place accessibility](https://www.nytimes.com/2018/08/23/us/randolph-county-georgia-voting.html), [voter registration campaigns](https://www.tennessean.com/story/news/politics/2019/04/15/tennessee-bill-critics-criminalize-incomplete-voter-registration-efforts-tre-hargett/3478903002/), and (sometimes hidden) [voter disenfranchisement](https://www.houstonchronicle.com/local/gray-matters/article/voting-rights-convicted-felons-harris-county-13751374.php). The Supreme Court also recently upheld Ohio’s practice of [purging inactive voters](https://www.dispatch.com/news/20181120/ohio-voter-roll-purges-beginning-again-after-husted-directive) from the voter rolls. Many of the most pressing voting rights challenges require precise knowledge of where polling places are and who is using those polling places, as well as which voters are affected by new policies.
 
 
 
@@ -66,7 +98,7 @@ This project aims to make it easier for community members to learn more about th
 
 ### Setting up the data collection
 
-we started with a list of the 88 counties in Ohio and a group of about 10 fellows. For each county we looked online for a publicly available shapefile. Around 30 had shapefiles up-front. Counties fell into one of four categories: had a shapefile, had a web map, had a PDF map, had nothing available (at the time). 
+we started with a list of the 88 counties in Ohio and a group of about 10 researchers. For each county we looked online for a publicly available shapefile. Around 30 had shapefiles up-front. Counties fell into one of four categories: had a shapefile, had a web map, had a PDF map, had nothing available (at the time). 
 After the initial internet search, we called the county Board of Elections and/or a secondary county official (a GIS specialist, for example). Our conversations with them depended on what information we had available to us already. For counties with shapefiles, we asked when that particular plan was adopted and if they had access to any previous plans’ shapefiles. For counties with a web map as the best option, which was fairly uncommon, they were almost always able to send the underlying shapefile, as well as answer all of the usual shapefile questions. Counties that had only PDF maps available online either said that the PDF was the best and only option or had a shapefile that just had not been released online, often due to a lack of strong GIS infrastructure. 
 
 
@@ -95,6 +127,16 @@ In total we estimated that we spent about 400 person hours on the project. Some 
 <br>
 
 ### Map examples
+
+<br>
+<br>
+
+<img src="images/union_south.jpg" width="70%" height = "100%" align="center">
+
+<br>
+
+
+<img src="images/St-Clair-Township-1.jpg" width="70%" height = "70%" align="center">
 
 <br>
 <br>
@@ -290,9 +332,9 @@ We can also look at this process in detail for certain minimum proportions. Belo
 
 
 
-After defining and implementing a model for imputing precinct names, we want to have a method for evaluating these maps. Two factors make this more complex. First, we do not have true values for the counties that did not provide data. Second, many model assessments are built for a quantitative response. We also needed an assessment built specifically for spatial qualitative response variables.
+After defining and implementing a model for imputing precinct names, we want to have a method for evaluating these maps. Two factors make this more complex. First, we do not have true values for the counties that did not provide data. We also needed an assessment built specifically for spatial qualitative response variables.
 
-In order to have "true" values for comparing the approximated ones, we independently generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure (**cite!!**), or v-measure. The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/). V-measure evaluates the “sameness” of the different precinct labels, or how well two different precinct maps fit together in one domain (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition (and the individual units of the partition are the zones). We compute values for completeness, the average “sameness” of the regions with respect to zones, and homogeneity, the average “sameness” of zones with respect to regions. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match. The methodology for v-measure is defined below. 
+In order to have "true" values to which to compare our approximations, we independently generated precinct maps for counties that did provide data. Using multiple counties allowed us to have an idea of the spread of possible accuracies. To compare the maps we use a spatial validity measure, or v-measure. The paper on using v-measure for spatial data by Nowosad and Stepinski is [freely available online](https://eartharxiv.org/rcjh7/) and also has an accompanying [blog post](https://nowosad.github.io/post/sabre-bp/). V-measure evaluates the “sameness” of the different precinct labels, or how well two different precinct maps fit together in one domain (a county). For simplicity, we refer to the official precinct boundaries as a regionalization and the approximate boundaries as a partition (and the individual units of the partition are the zones). We compute values for completeness, the average “sameness” of the regions with respect to zones, and homogeneity, the average “sameness” of zones with respect to regions. The v-measure is a harmonic mean of completeness and homogeneity and ranges between 0 and 1, with 1 being a perfect match. The methodology for v-measure is defined below. 
 
 We will call the county, our area of interest, $A$. The regionalization $R$, the official precincts, divides $A$ into $n$ regions $r_z | z = 1, 2, 3, ..., n$. The partition $W$, our approximated precincts, divides $A$ into $m$ zones $w_y | y = 1, 2, 3, ..., m$. We superimpose the regionalization and partition to subdivide the domain into $m x n$ units, having areas $a_{zy} | z = 1, ..., n; y = 1, ..., m$. In this case, $a_{zy}$ is the area of the intersection of region $z$ and zone $y$. 
 
@@ -339,7 +381,7 @@ To demostrate how we use v-measure, I will use Clark County as an example. For t
 
 Counties like Clark help validate our method by telling us how closely our approximations match the actual map. It is not necessarily a definitive measure, but it can be used to give a general idea of model adequacy. 
 
-Intitially we implemented a precinct approximation model defined by $\alpha = 0$, meaning only one neighbor has to be classified to classify a block. When we calculated v-measure, we got an overall score of $0.97$. **check overall and completeness/homogeneity values**. V-measure also calculates local inhomogeneity, which gives an idea of exactly which $a_{zy}$ units are the most inhomogeneous, or poorly approximated according to this measure. First, we can look at local inhomogeneity from the perspective of the official precinct boundaries.
+Intitially we implemented a precinct approximation model defined by $\alpha = 0$, meaning only one neighbor has to be classified to classify a block. When we calculated v-measure, we got an overall completeness of $0.95$ and homogeneity of $0.96$, giving the overall V-measure of $0.95$. This can be interpreted as there is a 95% spatial agreement between our two maps. V-measure also calculates local inhomogeneity, which gives an idea of exactly which $a_{zy}$ units are the most inhomogeneous, or poorly approximated according to this measure. First, we can look at local inhomogeneity from the perspective of the official precinct boundaries.
 
 <br>
 <br>
@@ -451,6 +493,21 @@ It is hard to see from the static maps but there is no change from the 14th to t
 
 ## What can we <br>do with this?
 
+<br>
+<br>
+
+With the 2020 census and election approaching, there has been an [increased interest](https://prospect.org/article/can-open-data-save-redistricting-reform) in open precinct data. This project presents one way to make the process easier. I argue that there are a few reasons that you might prefer this approximation over other more exact alternatives.
+
+1. For states with publicly available voterfiles, the approximation is much less labor and cost intensive than phone-banking county Boards of Elections.
+
+2. Computationally drawing precinct boundaries allows the process to be reproducible. This is helpful both for verifying your work and for updating it in the future.
+
+3. Drawing precincts directly from census geographies allows for a more intuitive spatial joining of demographic variables for further analysis.
+
+4. Another benefit of drawing the precincts directly from census geographies is that there is a high level of confidence in the quality of census shapefiles. That level of confidence is not nearly as high for every county's shapefiles. 
+
+5. It does not hurt to have multiple ways to approach a problem (in this case, collecting precinct data). 
+
 ## More resources
 
 <br>
@@ -470,3 +527,223 @@ This group is certainly not the only one working on voting rights and data scien
 * [Metric Geometry and Gerrymandering Group](https://mggg.org/)
 
 ...
+
+## Code
+
+
+**Code to reproduce the Noble County shapefile**
+
+You can adapt this code to any other Ohio county by starting with a different voterfile link. 
+
+This code is written in R using the tidyverse ([tidyr](https://tidyr.tidyverse.org/), [dplyr](https://github.com/tidyverse/dplyr), [ggplot2](https://ggplot2.tidyverse.org/)), [tigris](https://github.com/walkerke/tigris), and [sf](https://github.com/r-spatial/sf) packages.
+
+
+```{r eval = FALSE, include = TRUE, echo = TRUE}
+# setting up the libraries and data
+
+library(tidyverse)
+library(tigris)
+library(sf)
+
+noble <- read_csv("https://www6.sos.state.oh.us/ords/f?p=VOTERFTP:DOWNLOAD::FILE:NO:2:P2_PRODUCT_NUMBER:61") # download the voterfile for Noble County
+
+
+noble$GEOID10 <- NA # initialize an empty column
+
+# the call geolocator function takes the address, city, and state as individual columns and sends them as a request to the census bureau API
+
+vec <- purrr::map_chr(1:nrow(noble), function(i) tigris::call_geolocator(noble[['RESIDENTIAL_ADDRESS1']][i],
+                                                                         noble[['RESIDENTIAL_CITY']][i],
+                                                                         noble[['RESIDENTIAL_STATE']][i]))
+```
+
+```{r eval = FALSE, include=TRUE, echo=TRUE}
+
+# helper functions
+
+st_rook = function(a, b = a) sf::st_relate(a, b, pattern = "F***1****") # find rook-contiguity neighbors
+
+lookup_precinct <- function(index, precinct_name_var = "PRECINCT_NAME"){ # for a given row index, find the precinct name
+  precinct <- precincts_nb[index, precinct_name_var]
+  return(precinct)
+}
+
+create_precinct_vector <- function(){ # create a vector of precinct names from lookup_precinct
+  prec <- purrr::map(precincts_nb$NB_ROOK, lookup_precinct)
+  prec_vec <- purrr::map(prec, dplyr::pull)
+  return(prec_vec)
+}
+
+
+clean_precincts_fun <- function(i){ # clean the precincts, take out NA values
+  y <- precincts_nb_sub$precinct_nn[[i]]
+  print(y)
+  new_y <- y[!is.na(y)]
+  return(new_y)
+}
+#################################################
+
+# Use this function to assign 2010 census blocks to a particular precinct based on the most common precinct assignment of the voters geotagged there.
+
+join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GEOID", precinct_name = "PRECINCT_NAME"){
+  colnames(voters)[colnames(voters)==block_geoid_voters] <- 'BLOCK_GEOID'
+  colnames(voters)[colnames(voters)==precinct_name] <- 'PRECINCT_NAME'
+  precincts <- voters %>%
+  #   # mutate(BLOCK_GEOID = as.character(!! block_geoid_q)) %>%
+  #   # rename(PRECINCT_NAME = (!! precinct_name_q)) %>%
+    group_by(BLOCK_GEOID, PRECINCT_NAME) %>% # for each block, precinct combination
+    summarise(c=n()) %>% # counts the number of times a precinct is counted for a particular block
+    filter(row_number(desc(c))==1) # dataframe of precincts from voterfile, takes the most common precinct assignment for a block
+  
+  precincts_geo <- blocks %>%
+    # mutate(GEOID10 = (GEOID10)) %>%
+    left_join(precincts, by = c("GEOID10" = "BLOCK_GEOID")) %>% # combine precincts with block shapefile
+    mutate(dimension = st_dimension(.)) %>%
+    filter(!(is.na(dimension))) # take out empty polygons
+  
+  return(precincts_geo)
+  
+}
+
+# Assign a neighborhood to each block
+
+find_neighbors <- function(x, type = "rook"){
+  if (type == "rook"){
+    NB <- st_rook(x)
+  } else if (type == "queen") {
+    NB <- st_queen(x)
+  } else {
+    stop("Please enter 'rook' or 'queen' for neighbor type")
+  }
+  x$NB <- NA
+  for (i in 1:length(NB)){
+    x$NB[i] <- NB[i]
+    x$NB_length[i] <- length(x$NB[[i]])
+  }
+  
+  
+  return(x)
+}
+
+# Lookup the precinct names of each block in a neighborhood.
+
+
+lookup_precincts_nn <- function(x){
+  precinct_nn <- list()
+  
+  for (i in 1:nrow(x)) {
+    precincts <- c()
+    
+    for (y in x$NB[[i]]){
+      precincts <- c(precincts, x[[y, 'PRECINCT_NAME']])
+    }
+    
+    precinct_nn[[i]] <- precincts
+    
+  }
+  
+  x$precinct_nn <- precinct_nn
+  
+  for (i in 1:nrow(x)){
+    x$na_length[i] = sum(is.na(x$precinct_nn[[i]])) # count the number of NAs
+  }
+  
+  x$percent_nn_preclassified <- 1 - ( x$na_length / x$NB_length)
+  
+  
+  return(x)
+  
+}
+
+# Classify any unassigned block with the most common precinct name of the rook-neighborhood.
+
+classify_nn <- function(x, alpha = 0){
+  
+  x <- x %>%
+    mutate(less_than_alpha = percent_nn_preclassified < alpha) # percent of neighbors is less than the required number
+  
+  precincts_nb_sub <- x %>%
+    filter(!is.na(precinct_nn),
+           !identical(precinct_nn, character(0)),
+           less_than_alpha == FALSE) # take out blocks with not enough classified neighbors
+  
+  clean_precincts_fun <- function(i){
+    y <- precincts_nb_sub$precinct_nn[[i]]
+    new_y <- y[!is.na(y)]
+    return(new_y)
+  }
+
+  p_new <- map(1:nrow(precincts_nb_sub), clean_precincts_fun)
+  
+  p_lengths <- map(1:length(p_new), function(x) length(p_new[[x]]))
+  
+  
+  
+  precincts_nb_sub <- precincts_nb_sub %>%
+    mutate(precinct_nn_clean = p_new,
+           precinct_nn_length = p_lengths) %>% # finds the number of classified neighbors
+    filter(precinct_nn_length > 0)# take out the blocks without meaningful neighbors
+  
+
+
+  for (i in 1:nrow(precincts_nb_sub)){
+    precincts_nb_sub$PRECINCT_NAME[i] <- ifelse(is.na(precincts_nb_sub$PRECINCT_NAME[i]), 
+                                                names(which.max(table(precincts_nb_sub$precinct_nn[[i]]))), 
+                                                precincts_nb_sub$PRECINCT_NAME[i])
+  } # assign a precinct as the max of the vector of precincts
+  
+  precincts_nb_full <- x %>%
+    left_join(precincts_nb_sub %>% st_set_geometry(NULL) %>% select(GEOID10, PRECINCT_NAME), by = "GEOID10") %>%
+    mutate(PRECINCT_NAME.x = if_else(is.na(PRECINCT_NAME.x), PRECINCT_NAME.y, PRECINCT_NAME.x)) %>%
+    select(-PRECINCT_NAME.y) %>%
+    rename(PRECINCT_NAME = PRECINCT_NAME.x)
+  
+  message(paste0("There are ", sum(is.na(precincts_nb_full$PRECINCT_NAME)), " unclassified blocks."))
+  
+  return(precincts_nb_full)
+}
+
+```
+
+```{r eval = FALSE, include = TRUE, echo = TRUE}
+# run the classification for noble county iteratively
+
+# get the census block shapefile first
+
+blocks <- tigris::blocks(state = "OH", county = "Noble")
+
+blocks_sf <- blocks %>%
+  st_as_sf()
+
+# first iteration
+
+noble_nn1 <- noble %>%
+  mutate(BLOCK_GEOID = as.character(BLOCK_GEOID)) %>%
+  join_voters_to_blocks(blocks_sf) %>%
+  find_neighbors() %>%
+  lookup_precincts_nn() %>%
+  classify_nn()
+
+
+noble_nn2 <- noble_nn1 %>% # start with what is already classified
+  lookup_precincts_nn() %>% # we don't need to find the list of neighbors again, just update their assigned precincts
+  classify_nn()
+
+noble_nn3 <- noble_nn2 %>%
+  lookup_precincts_nn() %>%
+  classify_nn()
+
+noble_nn4 <- noble_nn3 %>%
+  lookup_precincts_nn() %>%
+  classify_nn()
+
+noble_nn5 <- noble_nn4 %>%
+  lookup_precincts_nn() %>%
+  classify_nn()
+
+noble_nn6 <- noble_nn5 %>%
+  lookup_precincts_nn() %>%
+  classify_nn()
+
+```
+
